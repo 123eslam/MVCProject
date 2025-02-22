@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Entities\" />
+    <Folder Include="Presistance\Data\Configuration\" />
+    <Folder Include="Presistance\Data\DataSeed\" />
+    <Folder Include="Presistance\Data\Migrations\" />
+    <Folder Include="Presistance\Repostories\" />
+  </ItemGroup>
+
+</Project>

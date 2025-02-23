@@ -23,6 +23,10 @@ namespace Demo.DAL.Presistance.Repostories.Departmemts
                 return _dbContext.Departments.AsNoTracking().ToList();
             return _dbContext.Departments.ToList();
         }
+        public IQueryable<Department> GetAllQueryable()
+        {
+            return _dbContext.Departments;
+        }
         public Department? GetByID(int id)
         {
             //return _dbContext.Departments.Local.FirstOrDefault(D => D.Id == id);

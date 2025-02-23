@@ -1,4 +1,5 @@
 using Demo.DAL.Presistance.Data.Context;
+using Demo.DAL.Presistance.Repostories.Departmemts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.PL
@@ -15,6 +16,8 @@ namespace Demo.PL
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+
 
             var app = builder.Build();
 

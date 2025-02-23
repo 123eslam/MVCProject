@@ -10,6 +10,7 @@ namespace Demo.DAL.Presistance.Repostories.Departmemts
     public interface IDepartmentRepository
     {
         IEnumerable<Department> GetAll(bool AsNoTracking = true);
+        IQueryable<Department> GetAllQueryable();
         Department? GetByID(int id);
         int AddDepartment(Department entity);
         int UpdateDepartment(Department entity);

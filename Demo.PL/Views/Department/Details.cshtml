@@ -1,0 +1,64 @@
+﻿@model DepartmentDetailesToReturnDto
+@{
+	ViewData["Title"] = "Details";
+}
+
+<h1 class="my-5 w-75 m-auto col-8">Department Details</h1>
+<ul class="nav nav-tabs col-8 w-75 m-auto" id="myTab" role="tablist">
+	<li class="nav-item" role="presentation">
+		<button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">General</button>
+	</li>
+	<li class="nav-item" role="presentation">
+		<button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Administration</button>
+	</li>
+</ul>
+<div class="tab-content col-8 w-75 m-auto" id="myTabContent">
+	<div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+		<form>
+			<div class="row">
+				<div class="mb-3 mt-2 col">
+					<label asp-for="Code" class="form-label"></label>
+					<input asp-for="Code" class="form-control" disabled>
+				</div>
+				<div class="mb-3 mt-2 col">
+					<label asp-for="Name" class="form-label"></label>
+					<input asp-for="Name" class="form-control" disabled>
+				</div>
+			</div>
+			<div class="mb-3 mt-2">
+				<label asp-for="Description" class="form-label"></label>
+				<input asp-for="Description" class="form-control" disabled>
+			</div>
+			<div class="mb-3 mt-2">
+				<label asp-for="CreationDate" class="form-label"></label>
+				<input asp-for="CreationDate" class="form-control" disabled>
+			</div>
+		</form>
+	</div>
+	<div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+		<form>
+			<div class="mb-3 mt-2">
+				<label asp-for="CreatedBy" class="form-label"></label>
+				<input asp-for="CreatedBy" class="form-control" disabled>
+			</div>
+			<div class="mb-3 mt-2">
+				<label asp-for="CreatedOn" class="form-label"></label>
+				<input asp-for="CreatedOn" type="date" class="form-control" disabled>
+			</div>
+			<div class="mb-3 mt-2">
+				<label asp-for="LastModifiedBy" class="form-label"></label>
+				<input asp-for="LastModifiedBy" class="form-control" disabled>
+			</div>
+			<div class="mb-3 mt-2">
+				<label asp-for="LastModifiedOn" class="form-label"></label>
+				<input asp-for="LastModifiedOn" type="date" class="form-control" disabled>
+			</div>
+		</form>
+	</div>
+	<div class="mt-4">
+		<a asp-controller="Department" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-success">Edit</a>
+		<a asp-controller="Department" asp-action="Index" class="btn btn-outline-dark">Back to list</a>
+	</div>
+</div>
+
+

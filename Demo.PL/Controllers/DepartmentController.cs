@@ -115,5 +115,36 @@ namespace Demo.PL.Controllers
             }
             return View(department);
         }
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+            if (id is null)
+                return BadRequest();
+            var department = _departmentService.GetDepartmentById(id.Value);
+            if (department is null)
+                return NotFound();
+            return View(department);
+        }
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            var message = string.Empty;
+            try
+            {
+                var result = _departmentService.DeleteDepartment(id);
+                if (result)
+                    return RedirectToAction(nameof(Index));
+                else
+                {
+                    message = "Failed to delete department";
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                message = _environment.IsDevelopment() ? ex.Message : "Failed to delete department";
+            }
+            return View(nameof(Index));
+        }
     }
 }

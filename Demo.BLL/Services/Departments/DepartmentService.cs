@@ -36,7 +36,7 @@ namespace Demo.BLL.Services.Departments
             {
                 Id = department.Id,
                 Name = department.Name,
-                Description = department.Description,
+                //Description = department.Description,
                 Code = department.Code,
                 CreationDate = department.CreationDate
             }).AsNoTracking().ToList();

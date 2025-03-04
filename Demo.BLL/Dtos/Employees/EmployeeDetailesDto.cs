@@ -27,5 +27,9 @@ namespace Demo.BLL.Dtos.Employees
         public DateTime HiringDate { get; set; }
         public string Gender { get; set; } = null!;
         public string EmployeeType { get; set; } = null!;
+        public int CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public int LastModifiedBy { get; set; }
+        public DateTime LastModifiedOn { get; set; }
     }
 }

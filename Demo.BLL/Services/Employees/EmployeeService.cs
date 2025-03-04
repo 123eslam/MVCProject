@@ -1,11 +1,7 @@
 ﻿using Demo.BLL.Dtos.Employees;
 using Demo.DAL.Entities.Employees;
 using Demo.DAL.Presistance.Repostories.Employees;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Demo.BLL.Services.Employees
 {
@@ -27,9 +23,9 @@ namespace Demo.BLL.Services.Employees
                 Salary = employee.Salary,
                 IsActive = employee.IsActive,
                 Email = employee.Email,
-                EmployeeType = nameof(employee.EmployeeType),
-                Gender = nameof(employee.Gender)
-            });
+                EmployeeType = employee.EmployeeType.ToString(),
+                Gender = employee.Gender.ToString()
+            }).AsNoTracking().ToList();
         }
         public EmployeeDetailesDto? GetEmployeeById(int id)
         {
@@ -46,8 +42,12 @@ namespace Demo.BLL.Services.Employees
                     Email = employee.Email,
                     PhoneNumber = employee.PhoneNumber,
                     HiringDate = employee.HiringDate,
-                    Gender = nameof(employee.Gender),
-                    EmployeeType = nameof(employee.EmployeeType)
+                    Gender = employee.Gender.ToString(),
+                    EmployeeType = employee.EmployeeType.ToString(),
+                    CreatedBy = employee.CreatedBy,
+                    CreatedOn = employee.CreatedOn,
+                    LastModifiedBy = employee.LastModifiedBy,
+                    LastModifiedOn = employee.LastModifiedOn
                 };
             return null;
         }

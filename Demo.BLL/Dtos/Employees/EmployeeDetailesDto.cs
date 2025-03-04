@@ -26,10 +26,15 @@ namespace Demo.BLL.Dtos.Employees
         [Display(Name = "Hiring Date")]
         public DateTime HiringDate { get; set; }
         public string Gender { get; set; } = null!;
+        [Display(Name = "Employee Type")]
         public string EmployeeType { get; set; } = null!;
+        [Display(Name = "Created By")]
         public int CreatedBy { get; set; }
+        [Display(Name = "Created On")]
         public DateTime CreatedOn { get; set; }
+        [Display(Name = "Last Modified By")]
         public int LastModifiedBy { get; set; }
+        [Display(Name = "Last Modified On")]
         public DateTime LastModifiedOn { get; set; }
     }
 }

@@ -1,51 +1,19 @@
 ﻿using Demo.DAL.Entities.Departments;
 using Demo.DAL.Presistance.Data.Context;
+using Demo.DAL.Presistance.Repostories._Generic;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Demo.DAL.Presistance.Repostories.Departmemts
 {
-    public class DepartmentRepository : IDepartmentRepository
+    public class DepartmentRepository : GenericRepository<Department>, IDepartmentRepository
     {
-        private readonly ApplicationDbContext _dbContext;
+        public DepartmentRepository(ApplicationDbContext dbContext) : base(dbContext)
+        {
+        }
 
-        public DepartmentRepository(ApplicationDbContext dbContext)
+        public Department? GetByName(string name)
         {
-            _dbContext = dbContext;
-        }
-        public IEnumerable<Department> GetAll(bool AsNoTracking = true)
-        {
-            if(AsNoTracking)
-                return _dbContext.Departments.AsNoTracking().ToList();
-            return _dbContext.Departments.ToList();
-        }
-        public IQueryable<Department> GetAllQueryable()
-        {
-            return _dbContext.Departments;
-        }
-        public Department? GetByID(int id)
-        {
-            //return _dbContext.Departments.Local.FirstOrDefault(D => D.Id == id);
-            return _dbContext.Departments.Find(id);
-        }
-        public int AddDepartment(Department entity)
-        {
-            _dbContext.Departments.Add(entity);
-            return _dbContext.SaveChanges();
-        }
-        public int UpdateDepartment(Department entity)
-        {
-            _dbContext.Departments.Update(entity);
-            return _dbContext.SaveChanges();
-        }
-        public int DeleteDepartment(Department entity)
-        {
-            _dbContext.Departments.Remove(entity);
-            return _dbContext.SaveChanges();
+            return _dbContext.Departments.AsNoTracking().FirstOrDefault(D => D.Name == name);
         }
     }
 }

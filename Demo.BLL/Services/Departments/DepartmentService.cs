@@ -2,11 +2,6 @@
 using Demo.DAL.Entities.Departments;
 using Demo.DAL.Presistance.Repostories.Departmemts;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Demo.BLL.Services.Departments
 {
@@ -75,7 +70,7 @@ namespace Demo.BLL.Services.Departments
                 LastModifiedBy = 1, //UserId
                 LastModifiedOn = DateTime.UtcNow
             };
-            return _departmentRepository.AddDepartment(department);
+            return _departmentRepository.Add(department);
         }
         public int UpdateDepartment(DepartmentToUpdateDto entity)
         {
@@ -90,14 +85,14 @@ namespace Demo.BLL.Services.Departments
                 LastModifiedBy = 1, //UserId
                 LastModifiedOn = DateTime.UtcNow
             };
-            return _departmentRepository.UpdateDepartment(department);
+            return _departmentRepository.Update(department);
         }
         public bool DeleteDepartment(int id)
         {
             var department = _departmentRepository.GetByID(id);
             if(department is not null)
             {
-                int rowAffect = _departmentRepository.DeleteDepartment(department);
+                int rowAffect = _departmentRepository.Delete(department);
                 return rowAffect > 0;
             }
             return false;

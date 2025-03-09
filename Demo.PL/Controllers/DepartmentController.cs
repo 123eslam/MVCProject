@@ -24,6 +24,8 @@ namespace Demo.PL.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            ViewData["Message"] = "Hello from View Data";
+            ViewBag.Message = "Hello from View Bag";
             var departments = _departmentService.GetDepartments();
             return View(departments);
         }

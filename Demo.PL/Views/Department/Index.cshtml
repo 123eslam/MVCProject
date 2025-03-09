@@ -1,7 +1,12 @@
 ﻿@model IEnumerable<DepartmentToReturnDto>
 @{
 	ViewData["Title"] = "Index";
+	string? viewDataMsg = ViewData["Message"] as string;
+	string? viewBagMsg = ViewBag.Message;
 }
+<div class="alert alert-info">
+	@ViewData["Message"]
+</div>
 <h1>All Department</h1>
 <a class="btn btn-primary mt-5" asp-controller="Department" asp-action="Create">
 	<i class="fas fa-circle-plus"></i> Create Department

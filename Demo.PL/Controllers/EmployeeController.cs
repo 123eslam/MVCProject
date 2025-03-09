@@ -10,28 +10,36 @@ namespace Demo.PL.Controllers
 {
     public class EmployeeController : Controller
     {
+        #region Services
         private readonly IEmployeeService _employeeService;
         private readonly ILogger<EmployeeController> _logger;
         private readonly IWebHostEnvironment _environment;
 
-        public EmployeeController(IEmployeeService employeeService ,ILogger<EmployeeController> logger ,IWebHostEnvironment environment)
+        public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger, IWebHostEnvironment environment)
         {
             _employeeService = employeeService;
             _logger = logger;
             _environment = environment;
         }
+        #endregion
+
+        #region Index
         [HttpGet]
         public IActionResult Index()
         {
             var employees = _employeeService.GetEmployees();
             return View(employees);
         }
+        #endregion
+
+        #region Create
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(CreateEmployeeDto employeeDto)
         {
             if (!ModelState.IsValid)
@@ -49,7 +57,7 @@ namespace Demo.PL.Controllers
                     return View(employeeDto);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
                 if (_environment.IsDevelopment())
@@ -64,6 +72,9 @@ namespace Demo.PL.Controllers
                 }
             }
         }
+        #endregion
+
+        #region Details
         [HttpGet]
         public IActionResult Details(int? id)
         {
@@ -74,6 +85,9 @@ namespace Demo.PL.Controllers
                 return NotFound();
             return View(employee);
         }
+        #endregion
+
+        #region Edit
         [HttpGet]
         public IActionResult Edit(int? id)
         {
@@ -93,11 +107,12 @@ namespace Demo.PL.Controllers
                 Email = employee.Email,
                 PhoneNumber = employee.PhoneNumber,
                 HiringDate = employee.HiringDate,
-                Gender = (Gender)Enum.Parse(typeof(Gender),employee.Gender),
+                Gender = (Gender)Enum.Parse(typeof(Gender), employee.Gender),
                 EmployeeType = (EmployeeType)Enum.Parse(typeof(EmployeeType), employee.EmployeeType)
             });
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, UpdateEmployeeDto employee)
         {
             if (!ModelState.IsValid)
@@ -119,6 +134,9 @@ namespace Demo.PL.Controllers
             }
             return View(employee);
         }
+        #endregion
+
+        #region Delete
         [HttpGet]
         public IActionResult Delete(int? id)
         {
@@ -130,6 +148,7 @@ namespace Demo.PL.Controllers
             return View(employee);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
             var message = string.Empty;
@@ -149,6 +168,7 @@ namespace Demo.PL.Controllers
                 message = _environment.IsDevelopment() ? ex.Message : "Failed to delete employee";
             }
             return View(nameof(Index));
-        }
+        } 
+        #endregion
     }
 }

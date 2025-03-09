@@ -37,14 +37,20 @@ namespace Demo.PL.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(DepartmentToCreateDto department)
+        public IActionResult Create(DepartmentViewModel department)
         {
             if (!ModelState.IsValid)
                 return View(department);
             var message = string.Empty;
             try
             {
-                var result = _departmentService.CreateDepartment(department);
+                var result = _departmentService.CreateDepartment(new DepartmentToCreateDto()
+                {
+                    Code = department.Code,
+                    Name = department.Name,
+                    Description = department.Description,
+                    CreationDate = department.CreationDate
+                });
                 if (result > 0)
                     return RedirectToAction(nameof(Index));
                 else
@@ -93,7 +99,7 @@ namespace Demo.PL.Controllers
             var department = _departmentService.GetDepartmentById(id.Value);
             if (department is null)
                 return NotFound();
-            return View(new DepartmentEditViewModel()
+            return View(new DepartmentViewModel()
             {
                 Code = department.Code,
                 Description = department.Description,
@@ -103,7 +109,7 @@ namespace Demo.PL.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, DepartmentEditViewModel department)
+        public IActionResult Edit(int id, DepartmentViewModel department)
         {
             if (!ModelState.IsValid)
                 return View(department);

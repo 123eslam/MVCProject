@@ -35,24 +35,8 @@
 					<td>@Html.DisplayFor(e => employee.Salary)</td>
 					<td>@Html.DisplayFor(e => employee.IsActive)</td>
 					<td>@Html.DisplayFor(e => employee.Gender)</td>
-					<td>
-						<a class="btn btn-primary" asp-controller="Employee" asp-action="Details" asp-route-id="@employee.Id">
-							<i class="fas fa-eye"></i> Details
-						</a>
-					</td>
-					<td>
-						<a class="btn btn-success" asp-controller="Employee" asp-action="Edit" asp-route-id="@employee.Id">
-							<i class="fas fa-edit"></i> Edit
-						</a>
-					</td>
-					<td>
-						@* <a class="btn btn-danger" asp-controller="Department" asp-action="Delete" asp-route-id="@department.Id">
-							<i class="fas fa-trash"></i> Delete
-						</a> *@
-						<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
-							<i class="fas fa-trash"></i> Delete
-						</button>
-					</td>
+					<partial name="_ButtonsPartial" model="@employee.Id" />
+
 				</tr>
 				<!-- Modal -->
 				<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

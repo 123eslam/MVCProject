@@ -1,5 +1,6 @@
 ﻿using Demo.BLL.Dtos.Departments;
 using Demo.BLL.Dtos.Employees;
+using Demo.BLL.Services.Departments;
 using Demo.BLL.Services.Employees;
 using Demo.DAL.Common.Enums;
 using Demo.DAL.Entities.Departments;
@@ -34,8 +35,9 @@ namespace Demo.PL.Controllers
 
         #region Create
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(/*[FromServices] IDepartmentService departmentService*/)
         {
+            //ViewData["Departments"] = departmentService.GetDepartments();
             return View();
         }
         [HttpPost]

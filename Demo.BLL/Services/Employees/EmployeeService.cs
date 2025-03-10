@@ -71,7 +71,8 @@ namespace Demo.BLL.Services.Employees
                 EmployeeType = entity.EmployeeType,
                 CreatedBy = 1,
                 LastModifiedBy = 1,
-                LastModifiedOn = DateTime.UtcNow
+                LastModifiedOn = DateTime.UtcNow,
+                DepartmentId = entity.DepartmentId
             };
             return _employeeRepository.Add(employee);
         }
@@ -92,7 +93,8 @@ namespace Demo.BLL.Services.Employees
                 EmployeeType = entity.EmployeeType,
                 CreatedBy = 1,
                 LastModifiedBy = 1,
-                LastModifiedOn = DateTime.UtcNow
+                LastModifiedOn = DateTime.UtcNow,
+                DepartmentId = entity.DepartmentId
             };
             return _employeeRepository.Update(employee);
         }

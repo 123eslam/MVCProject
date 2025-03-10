@@ -54,13 +54,16 @@ namespace Demo.PL.Controllers
                     CreationDate = department.CreationDate
                 });
                 if (result > 0)
-                    return RedirectToAction(nameof(Index));
+                {
+                    TempData["Message"] = "Department created successfully";
+                }
                 else
                 {
                     message = "Failed to create department";
+                    TempData["Message"] = message;
                     ModelState.AddModelError(string.Empty, message);
-                    return View(department);
                 }
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {

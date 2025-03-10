@@ -1,4 +1,5 @@
 ﻿using Demo.DAL.Common.Enums;
+using Demo.DAL.Entities.Departments;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

@@ -9,17 +9,20 @@
 </div> *@
 @if (!string.IsNullOrEmpty(TempData["Message"] as string))
 {
-	<div class="alert alert-info w-50 m-auto">
-		@TempData["Message"]
+	<div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
+		<div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="toast-header">
+				<img src="~/img/ImageTrue.jpg" class="rounded me-2" alt="Success Icon" width="20" height="20">
+				<strong class="me-auto text-primary">Success!!</strong>
+				<small class="text-body-secondary">@DateTime.Now.ToString("hh:mm tt")</small>
+				<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+			<div class="toast-body align-items-center">
+				@TempData["Message"]
+			</div>
+		</div>
 	</div>
-	@* <div class="toast align-items-center text-bg-primary border-0" role="alert" aria-live="assertive" aria-atomic="true"> *@
-	@* 	<div class="d-flex"> *@
-	@* 		<div class="toast-body"> *@
-	@* 			@TempData["Message"] *@
-	@* 		</div> *@
-	@* 		<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button> *@
-	@* 	</div> *@
-	@* </div> *@
+
 }
 <h1>All Department</h1>
 <a class="btn btn-primary mt-5" asp-controller="Department" asp-action="Create">
@@ -52,7 +55,7 @@
 					@Html.Partial("_ButtonsPartial", department.Id); *@
 				</tr>
 				<!-- Modal -->
-				<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal fade" id="exampleModal-@department.Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header">

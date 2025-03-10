@@ -42,22 +42,38 @@ namespace Demo.PL.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CreateEmployeeDto employeeDto)
+        public IActionResult Create(UpdateEmployeeDto employeeDto)
         {
             if (!ModelState.IsValid)
                 return View(employeeDto);
             var message = string.Empty;
             try
             {
-                var Result = _employeeService.CreateEmployee(employeeDto);
+                var Result = _employeeService.CreateEmployee(new CreateEmployeeDto()
+                {
+                    Name = employeeDto.Name,
+                    Age = employeeDto.Age,
+                    Address = employeeDto.Address,
+                    Salary = employeeDto.Salary,
+                    IsActive = employeeDto.IsActive,
+                    Email = employeeDto.Email,
+                    PhoneNumber = employeeDto.PhoneNumber,
+                    HiringDate = employeeDto.HiringDate,
+                    EmployeeType = employeeDto.EmployeeType,
+                    Gender = employeeDto.Gender,
+                    DepartmentId = employeeDto.DepartmentId
+                });
                 if (Result > 0)
-                    return RedirectToAction(nameof(Index));
+                {
+                    TempData["Message"] = "Employee created successfully";
+                }
                 else
                 {
                     message = "Failed to create Employee";
+                    TempData["Message"] = message;
                     ModelState.AddModelError(string.Empty, message);
-                    return View(employeeDto);
                 }
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {

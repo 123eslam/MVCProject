@@ -53,7 +53,7 @@ namespace Demo.BLL.Services.Employees
                     CreatedOn = employee.CreatedOn,
                     LastModifiedBy = employee.LastModifiedBy,
                     LastModifiedOn = employee.LastModifiedOn,
-                    Department = employee.Department.Name
+                    Department = employee.Department?.Name
                 };
             return null;
         }

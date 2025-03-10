@@ -15,7 +15,7 @@ namespace Demo.BLL.Services.Employees
         }
         public IEnumerable<EmployeeDto> GetEmployees()
         {
-            var query = _employeeRepository.GetAllQueryable().Select(employee => new EmployeeDto()
+            var query = _employeeRepository.GetAllQueryable().Include(E => E.Department).Select(employee => new EmployeeDto()
             {
                 Id = employee.Id,
                 Name = employee.Name,
@@ -24,11 +24,12 @@ namespace Demo.BLL.Services.Employees
                 IsActive = employee.IsActive,
                 Email = employee.Email,
                 EmployeeType = employee.EmployeeType.ToString(),
-                Gender = employee.Gender.ToString()
+                Gender = employee.Gender.ToString(),
+                Department = employee.Department.Name
             });
-            var employees = query.ToList();
-            var count = query.Count();
-            var employee = query.FirstOrDefault();
+            //var employees = query.ToList();
+            //var count = query.Count();
+            //var employee = query.FirstOrDefault();
             return query;
         }
         public EmployeeDetailesDto? GetEmployeeById(int id)
@@ -51,7 +52,8 @@ namespace Demo.BLL.Services.Employees
                     CreatedBy = employee.CreatedBy,
                     CreatedOn = employee.CreatedOn,
                     LastModifiedBy = employee.LastModifiedBy,
-                    LastModifiedOn = employee.LastModifiedOn
+                    LastModifiedOn = employee.LastModifiedOn,
+                    Department = employee.Department.Name
                 };
             return null;
         }

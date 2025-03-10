@@ -17,6 +17,7 @@
 				<th>@Html.DisplayNameFor(E => E.EmployeeType)</th>
 				<th>@Html.DisplayNameFor(E => E.Age)</th>
 				<th>@Html.DisplayNameFor(E => E.Salary)</th>
+				<th>@Html.DisplayNameFor(E => E.Department)</th>
 				<th>@Html.DisplayNameFor(E => E.IsActive)</th>
 				<th>@Html.DisplayNameFor(E => E.Gender)</th>
 				<th>Details</th>
@@ -33,6 +34,7 @@
 					<td>@Html.DisplayFor(e => employee.EmployeeType)</td>
 					<td>@Html.DisplayFor(e => employee.Age)</td>
 					<td>@Html.DisplayFor(e => employee.Salary)</td>
+					<td>@Html.DisplayFor(e => employee.Department)</td>
 					<td>@Html.DisplayFor(e => employee.IsActive)</td>
 					<td>@Html.DisplayFor(e => employee.Gender)</td>
 					<partial name="_ButtonsPartial" model="@employee.Id" />

@@ -36,5 +36,6 @@ namespace Demo.BLL.Dtos.Employees
         public int LastModifiedBy { get; set; }
         [Display(Name = "Last Modified On")]
         public DateTime LastModifiedOn { get; set; }
+        public string? Department { get; set; }
     }
 }

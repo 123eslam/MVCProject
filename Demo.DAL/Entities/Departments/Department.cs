@@ -14,6 +14,6 @@ namespace Demo.DAL.Entities.Departments
         public string Code { get; set; } = null!;
         public DateOnly CreationDate { get; set; }
         //Navigation Properties [Many]
-        public ICollection<Employee> Employees { get; set; } = new HashSet<Employee>();
+        public virtual ICollection<Employee> Employees { get; set; } = new HashSet<Employee>();
     }
 }

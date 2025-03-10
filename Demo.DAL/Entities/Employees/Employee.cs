@@ -17,7 +17,7 @@ namespace Demo.DAL.Entities.Employees
         public Gender Gender { get; set; }
         public EmployeeType EmployeeType { get; set; }
         //Navigation Properties [One]
-        public Department? Department { get; set; }
+        public virtual Department? Department { get; set; }
         //Foreign Key
         public int? DepartmentId { get; set; }
     }

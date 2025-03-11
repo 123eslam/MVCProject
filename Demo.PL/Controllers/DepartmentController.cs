@@ -7,6 +7,7 @@ namespace Demo.PL.Controllers
 {
     public class DepartmentController : Controller
     {
+        #region Services
         private readonly IDepartmentService _departmentService;
         private readonly ILogger<DepartmentController> _logger;
         private readonly IWebHostEnvironment _environment;
@@ -17,34 +18,52 @@ namespace Demo.PL.Controllers
             _logger = logger;
             _environment = environment;
         }
+        #endregion
+
+        #region Index
         [HttpGet]
         public IActionResult Index()
         {
+            ViewData["Message"] = "Hello from View Data";
+            ViewBag.Message = "Hello from View Bag";
             var departments = _departmentService.GetDepartments();
             return View(departments);
         }
+        #endregion
+
+        #region Create
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
         [HttpPost]
-        public IActionResult Create(DepartmentToCreateDto department)
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(DepartmentViewModel department)
         {
             if (!ModelState.IsValid)
                 return View(department);
             var message = string.Empty;
             try
             {
-                var result = _departmentService.CreateDepartment(department);
+                var result = _departmentService.CreateDepartment(new DepartmentToCreateDto()
+                {
+                    Code = department.Code,
+                    Name = department.Name,
+                    Description = department.Description,
+                    CreationDate = department.CreationDate
+                });
                 if (result > 0)
-                    return RedirectToAction(nameof(Index));
+                {
+                    TempData["Message"] = "Department created successfully";
+                }
                 else
                 {
                     message = "Failed to create department";
+                    TempData["Message"] = message;
                     ModelState.AddModelError(string.Empty, message);
-                    return View(department);
                 }
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
@@ -61,6 +80,9 @@ namespace Demo.PL.Controllers
                 }
             }
         }
+        #endregion
+
+        #region Details
         [HttpGet]
         public IActionResult Details(int? id)
         {
@@ -71,6 +93,9 @@ namespace Demo.PL.Controllers
                 return NotFound();
             return View(department);
         }
+        #endregion
+
+        #region Edit
         [HttpGet]
         public IActionResult Edit(int? id)
         {
@@ -79,7 +104,7 @@ namespace Demo.PL.Controllers
             var department = _departmentService.GetDepartmentById(id.Value);
             if (department is null)
                 return NotFound();
-            return View(new DepartmentEditViewModel()
+            return View(new DepartmentViewModel()
             {
                 Code = department.Code,
                 Description = department.Description,
@@ -88,7 +113,8 @@ namespace Demo.PL.Controllers
             });
         }
         [HttpPost]
-        public IActionResult Edit(int id, DepartmentEditViewModel department)
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, DepartmentViewModel department)
         {
             if (!ModelState.IsValid)
                 return View(department);
@@ -115,6 +141,9 @@ namespace Demo.PL.Controllers
             }
             return View(department);
         }
+        #endregion
+
+        #region Delete
         [HttpGet]
         public IActionResult Delete(int? id)
         {
@@ -126,6 +155,7 @@ namespace Demo.PL.Controllers
             return View(department);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
             var message = string.Empty;
@@ -145,6 +175,7 @@ namespace Demo.PL.Controllers
                 message = _environment.IsDevelopment() ? ex.Message : "Failed to delete department";
             }
             return View(nameof(Index));
-        }
+        } 
+        #endregion
     }
 }

@@ -2,7 +2,23 @@
 @{
     ViewData["Title"] = "Index";
 }
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+	<div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
+		<div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="toast-header">
+				<img src="~/img/ImageTrue.jpg" class="rounded me-2" alt="Success Icon" width="30" height="30">
+				<strong class="me-auto text-primary">Success!!</strong>
+				<small class="text-body-secondary">@DateTime.Now.ToString("hh:mm tt")</small>
+				<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+			<div class="toast-body align-items-center">
+				@TempData["Message"]
+			</div>
+		</div>
+	</div>
 
+}
 <h1>All Employee</h1>
 <a class="btn btn-primary mt-5" asp-controller="Employee" asp-action="Create">
 	<i class="fas fa-circle-plus"></i> Create Employee
@@ -17,6 +33,7 @@
 				<th>@Html.DisplayNameFor(E => E.EmployeeType)</th>
 				<th>@Html.DisplayNameFor(E => E.Age)</th>
 				<th>@Html.DisplayNameFor(E => E.Salary)</th>
+				<th>@Html.DisplayNameFor(E => E.Department)</th>
 				<th>@Html.DisplayNameFor(E => E.IsActive)</th>
 				<th>@Html.DisplayNameFor(E => E.Gender)</th>
 				<th>Details</th>
@@ -33,29 +50,14 @@
 					<td>@Html.DisplayFor(e => employee.EmployeeType)</td>
 					<td>@Html.DisplayFor(e => employee.Age)</td>
 					<td>@Html.DisplayFor(e => employee.Salary)</td>
+					<td>@Html.DisplayFor(e => employee.Department)</td>
 					<td>@Html.DisplayFor(e => employee.IsActive)</td>
 					<td>@Html.DisplayFor(e => employee.Gender)</td>
-					<td>
-						<a class="btn btn-primary" asp-controller="Employee" asp-action="Details" asp-route-id="@employee.Id">
-							<i class="fas fa-eye"></i> Details
-						</a>
-					</td>
-					<td>
-						<a class="btn btn-success" asp-controller="Employee" asp-action="Edit" asp-route-id="@employee.Id">
-							<i class="fas fa-edit"></i> Edit
-						</a>
-					</td>
-					<td>
-						@* <a class="btn btn-danger" asp-controller="Department" asp-action="Delete" asp-route-id="@department.Id">
-							<i class="fas fa-trash"></i> Delete
-						</a> *@
-						<button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
-							<i class="fas fa-trash"></i> Delete
-						</button>
-					</td>
+					<partial name="_ButtonsPartial" model="@employee.Id" />
+
 				</tr>
 				<!-- Modal -->
-				<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal fade" id="exampleModal-@employee.Id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header">

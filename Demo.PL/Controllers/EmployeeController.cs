@@ -1,5 +1,6 @@
 ﻿using Demo.BLL.Dtos.Departments;
 using Demo.BLL.Dtos.Employees;
+using Demo.BLL.Services.Departments;
 using Demo.BLL.Services.Employees;
 using Demo.DAL.Common.Enums;
 using Demo.DAL.Entities.Departments;
@@ -10,46 +11,71 @@ namespace Demo.PL.Controllers
 {
     public class EmployeeController : Controller
     {
+        #region Services
         private readonly IEmployeeService _employeeService;
         private readonly ILogger<EmployeeController> _logger;
         private readonly IWebHostEnvironment _environment;
 
-        public EmployeeController(IEmployeeService employeeService ,ILogger<EmployeeController> logger ,IWebHostEnvironment environment)
+        public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger, IWebHostEnvironment environment)
         {
             _employeeService = employeeService;
             _logger = logger;
             _environment = environment;
         }
+        #endregion
+
+        #region Index
         [HttpGet]
         public IActionResult Index()
         {
             var employees = _employeeService.GetEmployees();
             return View(employees);
         }
+        #endregion
+
+        #region Create
         [HttpGet]
-        public IActionResult Create()
+        public IActionResult Create(/*[FromServices] IDepartmentService departmentService*/)
         {
+            //ViewData["Departments"] = departmentService.GetDepartments();
             return View();
         }
         [HttpPost]
-        public IActionResult Create(CreateEmployeeDto employeeDto)
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(UpdateEmployeeDto employeeDto)
         {
             if (!ModelState.IsValid)
                 return View(employeeDto);
             var message = string.Empty;
             try
             {
-                var Result = _employeeService.CreateEmployee(employeeDto);
+                var Result = _employeeService.CreateEmployee(new CreateEmployeeDto()
+                {
+                    Name = employeeDto.Name,
+                    Age = employeeDto.Age,
+                    Address = employeeDto.Address,
+                    Salary = employeeDto.Salary,
+                    IsActive = employeeDto.IsActive,
+                    Email = employeeDto.Email,
+                    PhoneNumber = employeeDto.PhoneNumber,
+                    HiringDate = employeeDto.HiringDate,
+                    EmployeeType = employeeDto.EmployeeType,
+                    Gender = employeeDto.Gender,
+                    DepartmentId = employeeDto.DepartmentId
+                });
                 if (Result > 0)
-                    return RedirectToAction(nameof(Index));
+                {
+                    TempData["Message"] = "Employee created successfully";
+                }
                 else
                 {
                     message = "Failed to create Employee";
+                    TempData["Message"] = message;
                     ModelState.AddModelError(string.Empty, message);
-                    return View(employeeDto);
                 }
+                return RedirectToAction(nameof(Index));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
                 if (_environment.IsDevelopment())
@@ -64,6 +90,9 @@ namespace Demo.PL.Controllers
                 }
             }
         }
+        #endregion
+
+        #region Details
         [HttpGet]
         public IActionResult Details(int? id)
         {
@@ -74,6 +103,9 @@ namespace Demo.PL.Controllers
                 return NotFound();
             return View(employee);
         }
+        #endregion
+
+        #region Edit
         [HttpGet]
         public IActionResult Edit(int? id)
         {
@@ -93,11 +125,12 @@ namespace Demo.PL.Controllers
                 Email = employee.Email,
                 PhoneNumber = employee.PhoneNumber,
                 HiringDate = employee.HiringDate,
-                Gender = (Gender)Enum.Parse(typeof(Gender),employee.Gender),
+                Gender = (Gender)Enum.Parse(typeof(Gender), employee.Gender),
                 EmployeeType = (EmployeeType)Enum.Parse(typeof(EmployeeType), employee.EmployeeType)
             });
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(int id, UpdateEmployeeDto employee)
         {
             if (!ModelState.IsValid)
@@ -119,6 +152,9 @@ namespace Demo.PL.Controllers
             }
             return View(employee);
         }
+        #endregion
+
+        #region Delete
         [HttpGet]
         public IActionResult Delete(int? id)
         {
@@ -130,6 +166,7 @@ namespace Demo.PL.Controllers
             return View(employee);
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(int id)
         {
             var message = string.Empty;
@@ -149,6 +186,7 @@ namespace Demo.PL.Controllers
                 message = _environment.IsDevelopment() ? ex.Message : "Failed to delete employee";
             }
             return View(nameof(Index));
-        }
+        } 
+        #endregion
     }
 }

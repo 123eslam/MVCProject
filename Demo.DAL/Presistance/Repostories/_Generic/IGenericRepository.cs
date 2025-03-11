@@ -6,6 +6,7 @@ namespace Demo.DAL.Presistance.Repostories._Generic
     {
         IEnumerable<T> GetAll(bool AsNoTracking = true);
         IQueryable<T> GetAllQueryable();
+        IEnumerable<T> GetAllEnumerable();
         T? GetByID(int id);
         int Add(T entity);
         int Update(T entity);

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Demo.DAL.Presistance.Repostories._Generic
 {
-    public class GenericRepository<T> where T : ModelBase    
+    public class GenericRepository<T> : IGenericRepository<T> where T : ModelBase    
     {
         private protected readonly ApplicationDbContext _dbContext;
 
@@ -41,6 +41,11 @@ namespace Demo.DAL.Presistance.Repostories._Generic
         {
             _dbContext.Set<T>().Remove(entity);
             return _dbContext.SaveChanges();
+        }
+
+        public IEnumerable<T> GetAllEnumerable()
+        {
+            return _dbContext.Set<T>();
         }
     }
 }

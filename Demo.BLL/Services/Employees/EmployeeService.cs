@@ -13,20 +13,23 @@ namespace Demo.BLL.Services.Employees
         {
             _employeeRepository = employeeRepository;
         }
-        public IEnumerable<EmployeeDto> GetEmployees()
+        public IEnumerable<EmployeeDto> GetEmployees(string SearchValue)
         {
-            var query = _employeeRepository.GetAllQueryable().Include(E => E.Department).Select(employee => new EmployeeDto()
-            {
-                Id = employee.Id,
-                Name = employee.Name,
-                Age = employee.Age,
-                Salary = employee.Salary,
-                IsActive = employee.IsActive,
-                Email = employee.Email,
-                EmployeeType = employee.EmployeeType.ToString(),
-                Gender = employee.Gender.ToString(),
-                Department = employee.Department.Name
-            });
+            var query = _employeeRepository.GetAllQueryable()
+                .Include(E => E.Department)
+                .Where(E => (string.IsNullOrEmpty(SearchValue) || E.Name.ToLower().Contains(SearchValue.ToLower())))
+                .Select(employee => new EmployeeDto()
+                {
+                    Id = employee.Id,
+                    Name = employee.Name,
+                    Age = employee.Age,
+                    Salary = employee.Salary,
+                    IsActive = employee.IsActive,
+                    Email = employee.Email,
+                    EmployeeType = employee.EmployeeType.ToString(),
+                    Gender = employee.Gender.ToString(),
+                    Department = employee.Department.Name
+                });
             //var employees = query.ToList();
             //var count = query.Count();
             //var employee = query.FirstOrDefault();
@@ -97,7 +100,7 @@ namespace Demo.BLL.Services.Employees
                 CreatedBy = 1,
                 LastModifiedBy = 1,
                 LastModifiedOn = DateTime.UtcNow,
-                DepartmentId = entity.DepartmentId 
+                DepartmentId = entity.DepartmentId
             };
             return _employeeRepository.Update(employee);
         }
@@ -107,6 +110,6 @@ namespace Demo.BLL.Services.Employees
             if (employee is { })
                 return _employeeRepository.Delete(employee) > 0;
             return false;
-        }        
+        }
     }
 }

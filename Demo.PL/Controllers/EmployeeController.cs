@@ -126,7 +126,9 @@ namespace Demo.PL.Controllers
                 PhoneNumber = employee.PhoneNumber,
                 HiringDate = employee.HiringDate,
                 Gender = (Gender)Enum.Parse(typeof(Gender), employee.Gender),
-                EmployeeType = (EmployeeType)Enum.Parse(typeof(EmployeeType), employee.EmployeeType)
+                EmployeeType = (EmployeeType)Enum.Parse(typeof(EmployeeType), employee.EmployeeType),
+                DepartmentName = employee.Department,
+                DepartmentId = employee.DepartmentId
             });
         }
         [HttpPost]

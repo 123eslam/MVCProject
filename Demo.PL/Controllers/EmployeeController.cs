@@ -1,4 +1,5 @@
-﻿using Demo.BLL.Dtos.Departments;
+﻿using AutoMapper;
+using Demo.BLL.Dtos.Departments;
 using Demo.BLL.Dtos.Employees;
 using Demo.BLL.Services.Departments;
 using Demo.BLL.Services.Employees;
@@ -13,12 +14,14 @@ namespace Demo.PL.Controllers
     {
         #region Services
         private readonly IEmployeeService _employeeService;
+        private readonly IMapper _mapper;
         private readonly ILogger<EmployeeController> _logger;
         private readonly IWebHostEnvironment _environment;
 
-        public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger, IWebHostEnvironment environment)
+        public EmployeeController(IEmployeeService employeeService, IMapper mapper, ILogger<EmployeeController> logger, IWebHostEnvironment environment)
         {
             _employeeService = employeeService;
+            _mapper = mapper;
             _logger = logger;
             _environment = environment;
         }
@@ -49,20 +52,8 @@ namespace Demo.PL.Controllers
             var message = string.Empty;
             try
             {
-                var Result = _employeeService.CreateEmployee(new CreateEmployeeDto()
-                {
-                    Name = employeeDto.Name,
-                    Age = employeeDto.Age,
-                    Address = employeeDto.Address,
-                    Salary = employeeDto.Salary,
-                    IsActive = employeeDto.IsActive,
-                    Email = employeeDto.Email,
-                    PhoneNumber = employeeDto.PhoneNumber,
-                    HiringDate = employeeDto.HiringDate,
-                    EmployeeType = employeeDto.EmployeeType,
-                    Gender = employeeDto.Gender,
-                    DepartmentId = employeeDto.DepartmentId
-                });
+                var employeeCreate = _mapper.Map<CreateEmployeeDto>(employeeDto);
+                var Result = _employeeService.CreateEmployee(employeeCreate);
                 if (Result > 0)
                 {
                     TempData["Message"] = "Employee created successfully";
@@ -114,22 +105,8 @@ namespace Demo.PL.Controllers
             var employee = _employeeService.GetEmployeeById(id.Value);
             if (employee is null)
                 return NotFound();
-            return View(new UpdateEmployeeDto()
-            {
-                Id = id.Value,
-                Name = employee.Name,
-                Age = employee.Age,
-                Address = employee.Address,
-                Salary = employee.Salary,
-                IsActive = employee.IsActive,
-                Email = employee.Email,
-                PhoneNumber = employee.PhoneNumber,
-                HiringDate = employee.HiringDate,
-                Gender = (Gender)Enum.Parse(typeof(Gender), employee.Gender),
-                EmployeeType = (EmployeeType)Enum.Parse(typeof(EmployeeType), employee.EmployeeType),
-                DepartmentName = employee.Department,
-                DepartmentId = employee.DepartmentId
-            });
+            var employeeUpdate = _mapper.Map<UpdateEmployeeDto>(employee);
+            return View(employeeUpdate);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -44,6 +44,5 @@ namespace Demo.BLL.Dtos.Employees
         public EmployeeType EmployeeType { get; set; }
         [Display(Name = "Department")]
         public int? DepartmentId { get; set; }
-        public string? DepartmentName { get; set; }
     }
 }

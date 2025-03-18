@@ -65,22 +65,7 @@
 	<div class="form-group mt-3">
 		<label asp-for="DepartmentId" class="control-label mb-2"></label>
 		<select asp-for="DepartmentId" asp-items="@departments" class="form-control">
-			@if (ViewData["Title"] as string == "Create")
-			{
-				<option value="@null">Select Department</option>
-			}
-			else
-			{
-				if (!string.IsNullOrEmpty(Model.DepartmentName))
-				{
-					<option value="@null">No Department</option>
-					<option value="@Model.DepartmentId">@Model.DepartmentName</option>
-				}
-				else
-				{
-					<option value="@null">Select Department</option>
-				}
-			}
+			<option value="@null">Select Department</option>
 		</select>
 	</div> 
 	<div class="m-auto mt-4">

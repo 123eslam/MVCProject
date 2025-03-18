@@ -1,8 +1,7 @@
 using Demo.BLL.Services.Departments;
 using Demo.BLL.Services.Employees;
 using Demo.DAL.Presistance.Data.Context;
-using Demo.DAL.Presistance.Repostories.Departmemts;
-using Demo.DAL.Presistance.Repostories.Employees;
+using Demo.DAL.Presistance.UnitOfWork;
 using Demo.PL.Mapping.Profiles;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,11 +20,13 @@ namespace Demo.PL
                 options.UseLazyLoadingProxies()
                 .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
-            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            //builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 
-            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            //builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfile()));
 

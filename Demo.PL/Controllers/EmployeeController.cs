@@ -1,11 +1,6 @@
 ﻿using AutoMapper;
-using Demo.BLL.Dtos.Departments;
 using Demo.BLL.Dtos.Employees;
-using Demo.BLL.Services.Departments;
 using Demo.BLL.Services.Employees;
-using Demo.DAL.Common.Enums;
-using Demo.DAL.Entities.Departments;
-using Demo.PL.ViewModels.Departments;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.PL.Controllers

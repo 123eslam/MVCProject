@@ -1,3 +1,4 @@
+using Demo.BLL.Common.Services.Attachment_Services;
 using Demo.BLL.Services.Departments;
 using Demo.BLL.Services.Employees;
 using Demo.DAL.Presistance.Data.Context;
@@ -29,6 +30,7 @@ namespace Demo.PL
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfile()));
+            builder.Services.AddTransient<IAttachmentService, AttachmentService>();
 
             var app = builder.Build();
             

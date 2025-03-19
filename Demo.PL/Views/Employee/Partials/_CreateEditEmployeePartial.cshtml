@@ -3,7 +3,7 @@
 @{
 	var departments = new SelectList(departmentService.GetDepartments(), nameof(DepartmentToReturnDto.Id), nameof(DepartmentToReturnDto.Name));
 }
-<form method="post" asp-action="@ViewData["Title"]" class="col-8">
+<form method="post" asp-action="@ViewData["Title"]" class="col-8" enctype="multipart/form-data">
 	<div asp-validation-summary="ModelOnly"></div>
 	<div class="form-floating mt-3">
 		<input class="form-control" asp-for="Name" placeholder="">
@@ -67,7 +67,11 @@
 		<select asp-for="DepartmentId" asp-items="@departments" class="form-control">
 			<option value="@null">Select Department</option>
 		</select>
-	</div> 
+	</div>
+	<div class="form-group mt-3">
+		<label asp-for="Image"></label>
+		<input class="form-control" asp-for="Image" placeholder="">
+	</div>
 	<div class="m-auto mt-4">
 		@if (ViewData["Title"] as string == "Create")
 		{

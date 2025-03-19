@@ -1,4 +1,5 @@
-﻿using Demo.BLL.Dtos.Employees;
+﻿using Demo.BLL.Common.Services.Attachment_Services;
+using Demo.BLL.Dtos.Employees;
 using Demo.DAL.Entities.Employees;
 using Demo.DAL.Presistance.Repostories.Employees;
 using Demo.DAL.Presistance.UnitOfWork;
@@ -15,9 +16,12 @@ namespace Demo.BLL.Services.Employees
         //    _employeeRepository = employeeRepository;
         //}
         private readonly IUnitOfWork _unitOfWork;
-        public EmployeeService(IUnitOfWork unitOfWork)
+        private readonly IAttachmentService _attachmentService;
+
+        public EmployeeService(IUnitOfWork unitOfWork ,IAttachmentService attachmentService)
         {
             _unitOfWork = unitOfWork;
+            _attachmentService = attachmentService;
         }
         public IEnumerable<EmployeeDto> GetEmployees(string SearchValue)
         {
@@ -86,6 +90,8 @@ namespace Demo.BLL.Services.Employees
                 LastModifiedOn = DateTime.UtcNow,
                 DepartmentId = entity.DepartmentId
             };
+            if (entity.Image is not null)
+                employee.Image = _attachmentService.Upload(entity.Image, "images");
             _unitOfWork.EmployeeRepository.Add(employee);
             return _unitOfWork.Complete();
         }

@@ -38,6 +38,7 @@ namespace Demo.BLL.Services.Employees
                     Email = employee.Email,
                     EmployeeType = employee.EmployeeType.ToString(),
                     Gender = employee.Gender.ToString(),
+                    Image = employee.Image,
                     Department = employee.Department.Name
                 });
             //var employees = query.ToList();
@@ -67,6 +68,7 @@ namespace Demo.BLL.Services.Employees
                     LastModifiedBy = employee.LastModifiedBy,
                     LastModifiedOn = employee.LastModifiedOn,
                     Department = employee.Department?.Name,
+                    Image = employee.Image,
                     DepartmentId = employee.DepartmentId
                 };
             return null;
@@ -115,6 +117,8 @@ namespace Demo.BLL.Services.Employees
                 LastModifiedOn = DateTime.UtcNow,
                 DepartmentId = entity.DepartmentId
             };
+            if (entity.Image is not null)
+                employee.Image = _attachmentService.Upload(entity.Image, "images");
             _unitOfWork.EmployeeRepository.Update(employee);
             return _unitOfWork.Complete();
         }
@@ -123,7 +127,14 @@ namespace Demo.BLL.Services.Employees
             var employeeRepository = _unitOfWork.EmployeeRepository;
             var employee = employeeRepository.GetByID(id);
             if (employee is { })
+            {
                 employeeRepository.Delete(employee);
+                if (employee.Image is not null)
+                {
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\files\\images", employee.Image);
+                    _attachmentService.Delete(filePath);
+                }
+            }
             return _unitOfWork.Complete() > 0;
         }
     }

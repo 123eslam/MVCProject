@@ -17,8 +17,21 @@ namespace Demo.PL.Mapping.Profiles
 
             #region Employee Module
             CreateMap<UpdateEmployeeDto, CreateEmployeeDto>();
-            CreateMap<EmployeeDetailesDto, UpdateEmployeeDto>();
+            CreateMap<EmployeeDetailesDto, UpdateEmployeeDto>()
+                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => ConvertToIFormFile(src.Image)));
+
             #endregion
+        }
+        private static IFormFile? ConvertToIFormFile(string? image)
+        {
+            if (string.IsNullOrEmpty(image))
+                return null;
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\files\\images", image);
+            var fileBytes = File.ReadAllBytes(filePath);
+            var stream = new MemoryStream(fileBytes);
+
+            return new FormFile(stream, 0, stream.Length, "file", image);
         }
     }
 }

@@ -23,9 +23,9 @@ namespace Demo.BLL.Services.Employees
             _unitOfWork = unitOfWork;
             _attachmentService = attachmentService;
         }
-        public IEnumerable<EmployeeDto> GetEmployees(string SearchValue)
+        public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(string SearchValue)
         {
-            var query = _unitOfWork.EmployeeRepository.GetAllQueryable()
+            var query = await  _unitOfWork.EmployeeRepository.GetAllQueryable()
                 .Include(E => E.Department)
                 .Where(E => (string.IsNullOrEmpty(SearchValue) || E.Name.ToLower().Contains(SearchValue.ToLower())))
                 .Select(employee => new EmployeeDto()
@@ -39,16 +39,16 @@ namespace Demo.BLL.Services.Employees
                     EmployeeType = employee.EmployeeType.ToString(),
                     Gender = employee.Gender.ToString(),
                     Image = employee.Image,
-                    Department = employee.Department.Name
-                });
+                    Department = employee.Department!.Name
+                }).ToListAsync();
             //var employees = query.ToList();
             //var count = query.Count();
             //var employee = query.FirstOrDefault();
             return query;
         }
-        public EmployeeDetailesDto? GetEmployeeById(int id)
+        public async Task<EmployeeDetailesDto?> GetEmployeeByIdAsync(int id)
         {
-            var employee = _unitOfWork.EmployeeRepository.GetByID(id);
+            var employee = await _unitOfWork.EmployeeRepository.GetByIdAsync(id);
             if (employee is { })
                 return new EmployeeDetailesDto()
                 {
@@ -73,7 +73,7 @@ namespace Demo.BLL.Services.Employees
                 };
             return null;
         }
-        public int CreateEmployee(CreateEmployeeDto entity)
+        public async Task<int> CreateEmployeeAsync(CreateEmployeeDto entity)
         {
             var employee = new Employee()
             {
@@ -93,11 +93,11 @@ namespace Demo.BLL.Services.Employees
                 DepartmentId = entity.DepartmentId
             };
             if (entity.Image is not null)
-                employee.Image = _attachmentService.Upload(entity.Image, "images");
+                employee.Image = await _attachmentService.UploadAsync(entity.Image, "images");
             _unitOfWork.EmployeeRepository.Add(employee);
-            return _unitOfWork.Complete();
+            return await _unitOfWork.CompleteAsync();
         }
-        public int UpdateEmployee(UpdateEmployeeDto entity)
+        public async Task<int> UpdateEmployeeAsync(UpdateEmployeeDto entity)
         {
             var employee = new Employee()
             {
@@ -118,14 +118,14 @@ namespace Demo.BLL.Services.Employees
                 DepartmentId = entity.DepartmentId
             };
             if (entity.Image is not null)
-                employee.Image = _attachmentService.Upload(entity.Image, "images");
+                employee.Image = await _attachmentService.UploadAsync(entity.Image, "images");
             _unitOfWork.EmployeeRepository.Update(employee);
-            return _unitOfWork.Complete();
+            return await _unitOfWork.CompleteAsync();
         }
-        public bool DeleteEmployee(int id)
+        public async Task<bool> DeleteEmployeeAsync(int id)
         {
             var employeeRepository = _unitOfWork.EmployeeRepository;
-            var employee = employeeRepository.GetByID(id);
+            var employee = await employeeRepository.GetByIdAsync(id);
             if (employee is { })
             {
                 employeeRepository.Delete(employee);
@@ -135,7 +135,7 @@ namespace Demo.BLL.Services.Employees
                     _attachmentService.Delete(filePath);
                 }
             }
-            return _unitOfWork.Complete() > 0;
+            return await _unitOfWork.CompleteAsync() > 0;
         }
     }
 }

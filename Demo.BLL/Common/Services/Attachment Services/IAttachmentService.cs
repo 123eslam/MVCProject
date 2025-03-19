@@ -10,7 +10,7 @@ namespace Demo.BLL.Common.Services.Attachment_Services
     public interface IAttachmentService
     {
         //(Upload - Delete) Image
-        public string? Upload(IFormFile file, string folderName);
+        public Task<string?> UploadAsync(IFormFile file, string folderName);
         public bool Delete(string filePath);
     }
 }

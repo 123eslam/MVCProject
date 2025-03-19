@@ -19,8 +19,9 @@ namespace Demo.BLL.Services.Departments
         {
             _unitOfWork = unitOfWork;
         }
-        public IEnumerable<DepartmentToReturnDto> GetDepartments()
+        public async Task<IEnumerable<DepartmentToReturnDto>> GetDepartmentsAsync()
         {
+            #region Old Away
             //var departments = _departmentRepository.GetAll();
             //foreach (var department in departments)
             //{
@@ -32,20 +33,22 @@ namespace Demo.BLL.Services.Departments
             //        Code = department.Code,
             //        CreationDate = department.CreationDate
             //    };
-            //}
-            var departments = _unitOfWork.DepartmentRepository.GetAllQueryable().Select(department => new DepartmentToReturnDto()
+            //} 
+            #endregion
+
+            var departments = await _unitOfWork.DepartmentRepository.GetAllQueryable().Select(department => new DepartmentToReturnDto()
             {
                 Id = department.Id,
                 Name = department.Name,
                 //Description = department.Description,
                 Code = department.Code,
                 CreationDate = department.CreationDate
-            }).AsNoTracking().ToList();
+            }).AsNoTracking().ToListAsync();
             return departments;
         }
-        public DepartmentDetailesToReturnDto? GetDepartmentById(int id)
+        public async Task<DepartmentDetailesToReturnDto?> GetDepartmentByIdAsync(int id)
         {
-            var department = _unitOfWork.DepartmentRepository.GetByID(id);
+            var department = await _unitOfWork.DepartmentRepository.GetByIdAsync(id);
             if (department is not null)
             {
                 return new DepartmentDetailesToReturnDto
@@ -64,7 +67,7 @@ namespace Demo.BLL.Services.Departments
             }
             return null;
         }
-        public int CreateDepartment(DepartmentToCreateDto entity)
+        public async Task<int> CreateDepartmentAsync(DepartmentToCreateDto entity)
         {
             var department = new Department()
             {
@@ -77,9 +80,9 @@ namespace Demo.BLL.Services.Departments
                 LastModifiedOn = DateTime.UtcNow
             };
             _unitOfWork.DepartmentRepository.Add(department);
-            return _unitOfWork.Complete();
+            return await _unitOfWork.CompleteAsync();
         }
-        public int UpdateDepartment(DepartmentToUpdateDto entity)
+        public async Task<int> UpdateDepartmentAsync(DepartmentToUpdateDto entity)
         {
             var department = new Department()
             {
@@ -93,15 +96,15 @@ namespace Demo.BLL.Services.Departments
                 LastModifiedOn = DateTime.UtcNow
             };
             _unitOfWork.DepartmentRepository.Update(department);
-            return _unitOfWork.Complete();
+            return await _unitOfWork.CompleteAsync();
         }
-        public bool DeleteDepartment(int id)
+        public async Task<bool> DeleteDepartmentAsync(int id)
         {
-            var departmentRepository = _unitOfWork.DepartmentRepository;
-            var department = departmentRepository.GetByID(id);
+            var departmentRepository =  _unitOfWork.DepartmentRepository;
+            var department = await departmentRepository.GetByIdAsync(id);
             if(department is not null)
                 departmentRepository.Delete(department);
-            return _unitOfWork.Complete() > 0;
+            return await _unitOfWork.CompleteAsync() > 0;
         }
     }
 }

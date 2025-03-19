@@ -1,7 +1,7 @@
 ﻿@model UpdateEmployeeDto
 @inject IDepartmentService departmentService
 @{
-	var departments = new SelectList(departmentService.GetDepartments(), nameof(DepartmentToReturnDto.Id), nameof(DepartmentToReturnDto.Name));
+	var departments = new SelectList(await departmentService.GetDepartmentsAsync(), nameof(DepartmentToReturnDto.Id), nameof(DepartmentToReturnDto.Name));
 }
 <form method="post" asp-action="@ViewData["Title"]" class="col-8" enctype="multipart/form-data">
 	<div asp-validation-summary="ModelOnly"></div>

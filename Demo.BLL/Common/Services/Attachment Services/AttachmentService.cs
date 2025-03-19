@@ -14,7 +14,7 @@ namespace Demo.BLL.Common.Services.Attachment_Services
         public readonly List<string> _allowedExtensions = new List<string>() { ".png", ".jpg", ".jpeg" };
         //Max size (2MB) -> (2097152 BYTE)
         public const int _maxAllowedSize = 2_097_152;
-        public string? Upload(IFormFile file, string folderName)
+        public async Task<string?> UploadAsync(IFormFile file, string folderName)
         {
             //1] Validate for extensions [.png , .jpg , .jpeg]
             var extension = Path.GetExtension(file.FileName);//Get extension from file name --> like (Eslam.png) --> extension is .png
@@ -34,7 +34,7 @@ namespace Demo.BLL.Common.Services.Attachment_Services
             //6] Save file as stream[Data per time]
             using var fileStream = new FileStream(filePath, FileMode.Create);
             //7] Copy file to the stream
-            file.CopyTo(fileStream);
+            await file.CopyToAsync(fileStream);
             //8] Return file name
             return fileName;
         }

@@ -24,9 +24,9 @@ namespace Demo.PL.Controllers
 
         #region Index
         [HttpGet]
-        public IActionResult Index(string SearchValue)
+        public async Task<IActionResult> Index(string SearchValue)
         {
-            var employees = _employeeService.GetEmployees(SearchValue);
+            var employees = await _employeeService.GetEmployeesAsync(SearchValue);
             return View(employees);
         }
         #endregion
@@ -40,7 +40,7 @@ namespace Demo.PL.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(UpdateEmployeeDto employeeDto)
+        public async Task<IActionResult> Create(UpdateEmployeeDto employeeDto)
         {
             if (!ModelState.IsValid)
                 return View(employeeDto);
@@ -48,7 +48,7 @@ namespace Demo.PL.Controllers
             try
             {
                 var employeeCreate = _mapper.Map<CreateEmployeeDto>(employeeDto);
-                var Result = _employeeService.CreateEmployee(employeeCreate);
+                var Result = await _employeeService.CreateEmployeeAsync(employeeCreate);
                 if (Result > 0)
                 {
                     TempData["Message"] = "Employee created successfully";
@@ -80,11 +80,11 @@ namespace Demo.PL.Controllers
 
         #region Details
         [HttpGet]
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
                 return BadRequest();
-            var employee = _employeeService.GetEmployeeById(id.Value);
+            var employee = await _employeeService.GetEmployeeByIdAsync(id.Value);
             if (employee == null)
                 return NotFound();
             return View(employee);
@@ -93,11 +93,11 @@ namespace Demo.PL.Controllers
 
         #region Edit
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
                 return BadRequest();
-            var employee = _employeeService.GetEmployeeById(id.Value);
+            var employee = await _employeeService.GetEmployeeByIdAsync(id.Value);
             if (employee is null)
                 return NotFound();
             var employeeUpdate = _mapper.Map<UpdateEmployeeDto>(employee);
@@ -105,14 +105,14 @@ namespace Demo.PL.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, UpdateEmployeeDto employee)
+        public async Task<IActionResult> Edit(int id, UpdateEmployeeDto employee)
         {
             if (!ModelState.IsValid)
                 return View(employee);
             var message = string.Empty;
             try
             {
-                var result = _employeeService.UpdateEmployee(employee);
+                var result = await _employeeService.UpdateEmployeeAsync(employee);
                 if (result > 0)
                     return RedirectToAction(nameof(Index));
                 else
@@ -130,23 +130,23 @@ namespace Demo.PL.Controllers
 
         #region Delete
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id is null)
                 return BadRequest();
-            var employee = _employeeService.GetEmployeeById(id.Value);
+            var employee = await _employeeService.GetEmployeeByIdAsync(id.Value);
             if (employee is null)
                 return NotFound();
             return View(employee);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var message = string.Empty;
             try
             {
-                var result = _employeeService.DeleteEmployee(id);
+                var result = await _employeeService.DeleteEmployeeAsync(id);
                 if (result)
                     return RedirectToAction(nameof(Index));
                 else

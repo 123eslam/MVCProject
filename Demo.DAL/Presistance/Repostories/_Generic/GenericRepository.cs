@@ -12,20 +12,20 @@ namespace Demo.DAL.Presistance.Repostories._Generic
         {
             _dbContext = dbContext;
         }
-        public IEnumerable<T> GetAll(bool AsNoTracking = true)
+        public async Task<IEnumerable<T>> GetAllAsync(bool AsNoTracking = true)
         {
             if (AsNoTracking)
-                return _dbContext.Set<T>().AsNoTracking().ToList();
-            return _dbContext.Set<T>().ToList();
+                return await _dbContext.Set<T>().AsNoTracking().ToListAsync();
+            return await _dbContext.Set<T>().ToListAsync();
         }
         public IQueryable<T> GetAllQueryable()
         {
             return _dbContext.Set<T>();
         }
-        public T? GetByID(int id)
+        public async Task<T?> GetByIdAsync(int id)
         {
             //return _dbContext.T.Local.FirstOrDefault(D => D.Id == id);
-            return _dbContext.Set<T>().Find(id);
+            return await _dbContext.Set<T>().FindAsync(id);
         }
         public void Add(T entity)
         {
@@ -38,11 +38,6 @@ namespace Demo.DAL.Presistance.Repostories._Generic
         public void Delete(T entity)
         {
             _dbContext.Set<T>().Remove(entity);
-        }
-
-        public IEnumerable<T> GetAllEnumerable()
-        {
-            return _dbContext.Set<T>();
         }
     }
 }

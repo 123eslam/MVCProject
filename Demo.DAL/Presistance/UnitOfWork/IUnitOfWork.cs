@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Demo.DAL.Presistance.UnitOfWork
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork : IAsyncDisposable
     {
         public IDepartmentRepository DepartmentRepository { get; }
         public IEmployeeRepository EmployeeRepository { get; }
-        int Complete();
+        Task<int> CompleteAsync();
     }
 }

@@ -25,11 +25,11 @@ namespace Demo.PL.Controllers
 
         #region Index
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             ViewData["Message"] = "Hello from View Data";
             ViewBag.Message = "Hello from View Bag";
-            var departments = _departmentService.GetDepartments();
+            var departments = await _departmentService.GetDepartmentsAsync();
             return View(departments);
         }
         #endregion
@@ -42,7 +42,7 @@ namespace Demo.PL.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(DepartmentViewModel departmentVM)
+        public async Task<IActionResult> Create(DepartmentViewModel departmentVM)
         {
             if (!ModelState.IsValid)
                 return View(departmentVM);
@@ -50,7 +50,7 @@ namespace Demo.PL.Controllers
             try
             {
                 var departmentToCreate = _mapper.Map<DepartmentViewModel, DepartmentToCreateDto>(departmentVM);
-                var result = _departmentService.CreateDepartment(departmentToCreate);
+                var result = await _departmentService.CreateDepartmentAsync(departmentToCreate);
                 if (result > 0)
                 {
                     TempData["Message"] = "Department created successfully";
@@ -82,11 +82,11 @@ namespace Demo.PL.Controllers
 
         #region Details
         [HttpGet]
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id is null)
                 return BadRequest();
-            var department = _departmentService.GetDepartmentById(id.Value);
+            var department = await _departmentService.GetDepartmentByIdAsync(id.Value);
             if (department is null)
                 return NotFound();
             return View(department);
@@ -95,11 +95,11 @@ namespace Demo.PL.Controllers
 
         #region Edit
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
                 return BadRequest();
-            var department = _departmentService.GetDepartmentById(id.Value);
+            var department = await _departmentService.GetDepartmentByIdAsync(id.Value);
             if (department is null)
                 return NotFound();
             var departmentVM = _mapper.Map<DepartmentDetailesToReturnDto, DepartmentViewModel>(department);
@@ -107,7 +107,7 @@ namespace Demo.PL.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, DepartmentViewModel department)
+        public async Task<IActionResult> Edit(int id, DepartmentViewModel department)
         {
             if (!ModelState.IsValid)
                 return View(department);
@@ -116,7 +116,7 @@ namespace Demo.PL.Controllers
             {
                 var departmentToUpdate = _mapper.Map<DepartmentViewModel, DepartmentToUpdateDto>(department);
                 departmentToUpdate.Id = id;
-                var result = _departmentService.UpdateDepartment(departmentToUpdate);
+                var result = await _departmentService.UpdateDepartmentAsync(departmentToUpdate);
                 if (result > 0)
                     return RedirectToAction(nameof(Index));
                 else
@@ -134,23 +134,23 @@ namespace Demo.PL.Controllers
 
         #region Delete
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id is null)
                 return BadRequest();
-            var department = _departmentService.GetDepartmentById(id.Value);
+            var department = await _departmentService.GetDepartmentByIdAsync(id.Value);
             if (department is null)
                 return NotFound();
             return View(department);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var message = string.Empty;
             try
             {
-                var result = _departmentService.DeleteDepartment(id);
+                var result = await _departmentService.DeleteDepartmentAsync(id);
                 if (result)
                     return RedirectToAction(nameof(Index));
                 else

@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Demo.BLL.Dtos.Employees;
 using Demo.BLL.Services.Employees;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.PL.Controllers
 {
+    [Authorize]//Only Authenticated Users
     public class EmployeeController : Controller
     {
         #region Services

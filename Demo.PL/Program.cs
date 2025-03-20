@@ -5,6 +5,7 @@ using Demo.DAL.Entities.Identity;
 using Demo.DAL.Presistance.Data.Context;
 using Demo.DAL.Presistance.UnitOfWork;
 using Demo.PL.Mapping.Profiles;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -44,8 +45,16 @@ namespace Demo.PL
                 options.Password.RequireNonAlphanumeric = true; //@ #
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 5;
-            }).AddEntityFrameworkStores<ApplicationDbContext>();
-            builder.Services.AddAuthentication();
+            }).AddEntityFrameworkStores<ApplicationDbContext>()
+              .AddDefaultTokenProviders();//PasswordSignInAsync depend on AddDefaultTokenProviders
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Acount/Login";
+                    options.AccessDeniedPath = "/Home/Error";
+                    options.LogoutPath = "/Acount/Login";
+                });
 
             var app = builder.Build();
             
@@ -62,6 +71,7 @@ namespace Demo.PL
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

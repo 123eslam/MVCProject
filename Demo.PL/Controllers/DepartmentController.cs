@@ -2,10 +2,12 @@
 using Demo.BLL.Dtos.Departments;
 using Demo.BLL.Services.Departments;
 using Demo.PL.ViewModels.Departments;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.PL.Controllers
 {
+    [Authorize]//Only Authenticated Users
     public class DepartmentController : Controller
     {
         #region Services

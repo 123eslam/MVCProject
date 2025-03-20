@@ -80,5 +80,11 @@ namespace Demo.PL.Controllers
             }
             return View(loginVM);
         }
+        [HttpGet]
+        public new async Task<IActionResult> SignOut()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Login");
+        }
     }
 }

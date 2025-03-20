@@ -20,5 +20,6 @@ namespace Demo.DAL.Entities.Employees
         public virtual Department? Department { get; set; }
         //Foreign Key
         public int? DepartmentId { get; set; }
+        public string? Image { get; set; } //ImageName
     }
 }

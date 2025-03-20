@@ -1,40 +1,54 @@
-﻿using Demo.BLL.Dtos.Employees;
+﻿using Demo.BLL.Common.Services.Attachment_Services;
+using Demo.BLL.Dtos.Employees;
 using Demo.DAL.Entities.Employees;
 using Demo.DAL.Presistance.Repostories.Employees;
+using Demo.DAL.Presistance.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.BLL.Services.Employees
 {
     public class EmployeeService : IEmployeeService
     {
-        private readonly IEmployeeRepository _employeeRepository;
+        //private readonly IEmployeeRepository _employeeRepository;
 
-        public EmployeeService(IEmployeeRepository employeeRepository)
+        //public EmployeeService(IEmployeeRepository employeeRepository)
+        //{
+        //    _employeeRepository = employeeRepository;
+        //}
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IAttachmentService _attachmentService;
+
+        public EmployeeService(IUnitOfWork unitOfWork ,IAttachmentService attachmentService)
         {
-            _employeeRepository = employeeRepository;
+            _unitOfWork = unitOfWork;
+            _attachmentService = attachmentService;
         }
-        public IEnumerable<EmployeeDto> GetEmployees()
+        public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(string SearchValue)
         {
-            var query = _employeeRepository.GetAllQueryable().Include(E => E.Department).Select(employee => new EmployeeDto()
-            {
-                Id = employee.Id,
-                Name = employee.Name,
-                Age = employee.Age,
-                Salary = employee.Salary,
-                IsActive = employee.IsActive,
-                Email = employee.Email,
-                EmployeeType = employee.EmployeeType.ToString(),
-                Gender = employee.Gender.ToString(),
-                Department = employee.Department.Name
-            });
+            var query = await  _unitOfWork.EmployeeRepository.GetAllQueryable()
+                .Include(E => E.Department)
+                .Where(E => (string.IsNullOrEmpty(SearchValue) || E.Name.ToLower().Contains(SearchValue.ToLower())))
+                .Select(employee => new EmployeeDto()
+                {
+                    Id = employee.Id,
+                    Name = employee.Name,
+                    Age = employee.Age,
+                    Salary = employee.Salary,
+                    IsActive = employee.IsActive,
+                    Email = employee.Email,
+                    EmployeeType = employee.EmployeeType.ToString(),
+                    Gender = employee.Gender.ToString(),
+                    Image = employee.Image,
+                    Department = employee.Department!.Name
+                }).ToListAsync();
             //var employees = query.ToList();
             //var count = query.Count();
             //var employee = query.FirstOrDefault();
             return query;
         }
-        public EmployeeDetailesDto? GetEmployeeById(int id)
+        public async Task<EmployeeDetailesDto?> GetEmployeeByIdAsync(int id)
         {
-            var employee = _employeeRepository.GetByID(id);
+            var employee = await _unitOfWork.EmployeeRepository.GetByIdAsync(id);
             if (employee is { })
                 return new EmployeeDetailesDto()
                 {
@@ -53,11 +67,13 @@ namespace Demo.BLL.Services.Employees
                     CreatedOn = employee.CreatedOn,
                     LastModifiedBy = employee.LastModifiedBy,
                     LastModifiedOn = employee.LastModifiedOn,
-                    Department = employee.Department?.Name
+                    Department = employee.Department?.Name,
+                    Image = employee.Image,
+                    DepartmentId = employee.DepartmentId
                 };
             return null;
         }
-        public int CreateEmployee(CreateEmployeeDto entity)
+        public async Task<int> CreateEmployeeAsync(CreateEmployeeDto entity)
         {
             var employee = new Employee()
             {
@@ -76,9 +92,12 @@ namespace Demo.BLL.Services.Employees
                 LastModifiedOn = DateTime.UtcNow,
                 DepartmentId = entity.DepartmentId
             };
-            return _employeeRepository.Add(employee);
+            if (entity.Image is not null)
+                employee.Image = await _attachmentService.UploadAsync(entity.Image, "images");
+            _unitOfWork.EmployeeRepository.Add(employee);
+            return await _unitOfWork.CompleteAsync();
         }
-        public int UpdateEmployee(UpdateEmployeeDto entity)
+        public async Task<int> UpdateEmployeeAsync(UpdateEmployeeDto entity)
         {
             var employee = new Employee()
             {
@@ -98,14 +117,25 @@ namespace Demo.BLL.Services.Employees
                 LastModifiedOn = DateTime.UtcNow,
                 DepartmentId = entity.DepartmentId
             };
-            return _employeeRepository.Update(employee);
+            if (entity.Image is not null)
+                employee.Image = await _attachmentService.UploadAsync(entity.Image, "images");
+            _unitOfWork.EmployeeRepository.Update(employee);
+            return await _unitOfWork.CompleteAsync();
         }
-        public bool DeleteEmployee(int id)
+        public async Task<bool> DeleteEmployeeAsync(int id)
         {
-            var employee = _employeeRepository.GetByID(id);
+            var employeeRepository = _unitOfWork.EmployeeRepository;
+            var employee = await employeeRepository.GetByIdAsync(id);
             if (employee is { })
-                return _employeeRepository.Delete(employee) > 0;
-            return false;
-        }        
+            {
+                employeeRepository.Delete(employee);
+                if (employee.Image is not null)
+                {
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\files\\images", employee.Image);
+                    _attachmentService.Delete(filePath);
+                }
+            }
+            return await _unitOfWork.CompleteAsync() > 0;
+        }
     }
 }

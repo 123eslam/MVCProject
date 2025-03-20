@@ -1,24 +1,24 @@
-﻿using Demo.BLL.Dtos.Departments;
+﻿using AutoMapper;
 using Demo.BLL.Dtos.Employees;
-using Demo.BLL.Services.Departments;
 using Demo.BLL.Services.Employees;
-using Demo.DAL.Common.Enums;
-using Demo.DAL.Entities.Departments;
-using Demo.PL.ViewModels.Departments;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.PL.Controllers
 {
+    [Authorize]//Only Authenticated Users
     public class EmployeeController : Controller
     {
         #region Services
         private readonly IEmployeeService _employeeService;
+        private readonly IMapper _mapper;
         private readonly ILogger<EmployeeController> _logger;
         private readonly IWebHostEnvironment _environment;
 
-        public EmployeeController(IEmployeeService employeeService, ILogger<EmployeeController> logger, IWebHostEnvironment environment)
+        public EmployeeController(IEmployeeService employeeService, IMapper mapper, ILogger<EmployeeController> logger, IWebHostEnvironment environment)
         {
             _employeeService = employeeService;
+            _mapper = mapper;
             _logger = logger;
             _environment = environment;
         }
@@ -26,9 +26,9 @@ namespace Demo.PL.Controllers
 
         #region Index
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string SearchValue)
         {
-            var employees = _employeeService.GetEmployees();
+            var employees = await _employeeService.GetEmployeesAsync(SearchValue);
             return View(employees);
         }
         #endregion
@@ -42,27 +42,15 @@ namespace Demo.PL.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(UpdateEmployeeDto employeeDto)
+        public async Task<IActionResult> Create(UpdateEmployeeDto employeeDto)
         {
             if (!ModelState.IsValid)
                 return View(employeeDto);
             var message = string.Empty;
             try
             {
-                var Result = _employeeService.CreateEmployee(new CreateEmployeeDto()
-                {
-                    Name = employeeDto.Name,
-                    Age = employeeDto.Age,
-                    Address = employeeDto.Address,
-                    Salary = employeeDto.Salary,
-                    IsActive = employeeDto.IsActive,
-                    Email = employeeDto.Email,
-                    PhoneNumber = employeeDto.PhoneNumber,
-                    HiringDate = employeeDto.HiringDate,
-                    EmployeeType = employeeDto.EmployeeType,
-                    Gender = employeeDto.Gender,
-                    DepartmentId = employeeDto.DepartmentId
-                });
+                var employeeCreate = _mapper.Map<CreateEmployeeDto>(employeeDto);
+                var Result = await _employeeService.CreateEmployeeAsync(employeeCreate);
                 if (Result > 0)
                 {
                     TempData["Message"] = "Employee created successfully";
@@ -94,11 +82,11 @@ namespace Demo.PL.Controllers
 
         #region Details
         [HttpGet]
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
                 return BadRequest();
-            var employee = _employeeService.GetEmployeeById(id.Value);
+            var employee = await _employeeService.GetEmployeeByIdAsync(id.Value);
             if (employee == null)
                 return NotFound();
             return View(employee);
@@ -107,38 +95,26 @@ namespace Demo.PL.Controllers
 
         #region Edit
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id is null)
                 return BadRequest();
-            var employee = _employeeService.GetEmployeeById(id.Value);
+            var employee = await _employeeService.GetEmployeeByIdAsync(id.Value);
             if (employee is null)
                 return NotFound();
-            return View(new UpdateEmployeeDto()
-            {
-                Id = id.Value,
-                Name = employee.Name,
-                Age = employee.Age,
-                Address = employee.Address,
-                Salary = employee.Salary,
-                IsActive = employee.IsActive,
-                Email = employee.Email,
-                PhoneNumber = employee.PhoneNumber,
-                HiringDate = employee.HiringDate,
-                Gender = (Gender)Enum.Parse(typeof(Gender), employee.Gender),
-                EmployeeType = (EmployeeType)Enum.Parse(typeof(EmployeeType), employee.EmployeeType)
-            });
+            var employeeUpdate = _mapper.Map<UpdateEmployeeDto>(employee);
+            return View(employeeUpdate);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, UpdateEmployeeDto employee)
+        public async Task<IActionResult> Edit(int id, UpdateEmployeeDto employee)
         {
             if (!ModelState.IsValid)
                 return View(employee);
             var message = string.Empty;
             try
             {
-                var result = _employeeService.UpdateEmployee(employee);
+                var result = await _employeeService.UpdateEmployeeAsync(employee);
                 if (result > 0)
                     return RedirectToAction(nameof(Index));
                 else
@@ -156,23 +132,23 @@ namespace Demo.PL.Controllers
 
         #region Delete
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id is null)
                 return BadRequest();
-            var employee = _employeeService.GetEmployeeById(id.Value);
+            var employee = await _employeeService.GetEmployeeByIdAsync(id.Value);
             if (employee is null)
                 return NotFound();
             return View(employee);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var message = string.Empty;
             try
             {
-                var result = _employeeService.DeleteEmployee(id);
+                var result = await _employeeService.DeleteEmployeeAsync(id);
                 if (result)
                     return RedirectToAction(nameof(Index));
                 else

@@ -1,9 +1,11 @@
 using Demo.BLL.Common.Services.Attachment_Services;
 using Demo.BLL.Services.Departments;
 using Demo.BLL.Services.Employees;
+using Demo.DAL.Entities.Identity;
 using Demo.DAL.Presistance.Data.Context;
 using Demo.DAL.Presistance.UnitOfWork;
 using Demo.PL.Mapping.Profiles;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.PL
@@ -32,6 +34,19 @@ namespace Demo.PL
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfile()));
             builder.Services.AddTransient<IAttachmentService, AttachmentService>();
 
+            //builder.Services.AddScoped<UserManager<ApplicationUser>>();
+            //builder.Services.AddScoped<SignInManager<ApplicationUser>>();
+            //builder.Services.AddScoped<RoleManager<IdentityRole>>();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>((options) =>
+            {
+                options.Password.RequireLowercase = true;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireNonAlphanumeric = true; //@ #
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 5;
+            }).AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddAuthentication();
+
             var app = builder.Build();
             
             // Configure the HTTP request pipeline.
@@ -51,7 +66,7 @@ namespace Demo.PL
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Acount}/{action=Register}/{id?}");
 
             app.Run();
         }

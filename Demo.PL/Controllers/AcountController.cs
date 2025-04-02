@@ -1,20 +1,22 @@
-﻿using Demo.DAL.Entities.Identity;
+﻿using Demo.BLL.Common.Services.EmailSettings;
+using Demo.DAL.Entities.Identity;
 using Demo.PL.ViewModels.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Demo.PL.Controllers
 {
     public class AcountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> _signInManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEmailSettings _emailSettings;
 
-        public AcountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AcountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSettings emailSettings)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailSettings = emailSettings;
         }
         //Register , Login , Signout
         [HttpGet] //Display Register Form
@@ -114,10 +116,17 @@ namespace Demo.PL.Controllers
                         //URL to reset password => BaseUrl/Acount/ResetPassword?email=eslam@gmail.come&&token=mferifnire45j4jk34nr3rnk
                     };
                     //Send Email
+                    _emailSettings.SendEmail(email);
+                    return RedirectToAction("CheckYourInbox");
                 }
                 ModelState.AddModelError(string.Empty, "Invaild operation");
             }
             return View(forgetPasswordVM);
+        }
+        [HttpGet]
+        public IActionResult CheckYourInbox()
+        {
+            return View();
         }
     }
 }

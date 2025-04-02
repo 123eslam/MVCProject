@@ -76,7 +76,7 @@ namespace Demo.PL
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Acount}/{action=Register}/{id?}");
+                pattern: "{controller=Acount}/{action=Login}/{id?}");
 
             app.Run();
         }

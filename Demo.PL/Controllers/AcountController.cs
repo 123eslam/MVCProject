@@ -2,6 +2,7 @@
 using Demo.PL.ViewModels.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Demo.PL.Controllers
 {
@@ -85,6 +86,38 @@ namespace Demo.PL.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login");
+        }
+        //Forget Password
+        [HttpGet]
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SendResetPasswordUrl(ForgetPasswordViewModel forgetPasswordVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(forgetPasswordVM.Email);
+                if(user is not null)
+                {
+                    //Generate Url to reset password
+                    //https://localhost:44312//Acount/ResetPassword?email=eslam@gmail.come&&token=mferifnire45j4jk34nr3rnk
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var url = Url.Action("ResetPassword", "Acount", new { email = forgetPasswordVM.Email, token = token }, Request.Scheme);
+                    //To ,Subject ,Body (Emial) ==> {To ,Subject ,Body}
+                    var email = new Email()
+                    {
+                        To = forgetPasswordVM.Email,
+                        Subject = "Reset Your Password",
+                        Body = url
+                        //URL to reset password => BaseUrl/Acount/ResetPassword?email=eslam@gmail.come&&token=mferifnire45j4jk34nr3rnk
+                    };
+                    //Send Email
+                }
+                ModelState.AddModelError(string.Empty, "Invaild operation");
+            }
+            return View(forgetPasswordVM);
         }
     }
 }

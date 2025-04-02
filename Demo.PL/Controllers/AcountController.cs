@@ -119,7 +119,7 @@ namespace Demo.PL.Controllers
                     _emailSettings.SendEmail(email);
                     return RedirectToAction("CheckYourInbox");
                 }
-                ModelState.AddModelError(string.Empty, "Invaild operation");
+                ModelState.AddModelError(string.Empty, "Invalid operation");
             }
             return View(forgetPasswordVM);
         }
@@ -127,6 +127,34 @@ namespace Demo.PL.Controllers
         public IActionResult CheckYourInbox()
         {
             return View();
+        }
+        //Reset Password action
+        [HttpGet]
+        public IActionResult ResetPassword(string email, string token)
+        {
+            TempData["Email"] = email;
+            TempData["Token"] = token;
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel resetPasswordVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var email = TempData["Email"] as string;
+                var token = TempData["Token"] as string;
+                var user = await _userManager.FindByEmailAsync(email);
+                if(user is not null)
+                {
+                    var result = await _userManager.ResetPasswordAsync(user, token, resetPasswordVM.Password);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction(nameof(Login));
+                    }
+                }
+            }
+            ModelState.AddModelError(string.Empty, "Invalid operation");
+            return View(resetPasswordVM);
         }
     }
 }

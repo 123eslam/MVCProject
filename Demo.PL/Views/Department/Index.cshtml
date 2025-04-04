@@ -48,7 +48,7 @@
 					<td>@department.Code</td>
 					<td>@department.Name</td>
 					<td>@department.CreationDate</td>
-					<partial name="_ButtonsPartial" model="@department.Id"/>
+					<partial name="_ButtonsPartial" model="@department.Id.ToString()"/>
 					@* @{ 
 						Html.RenderPartial("_ButtonsPartial" ,department.Id); 
 					} 

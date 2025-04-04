@@ -72,7 +72,7 @@
 					<td>@Html.DisplayFor(e => employee.Department)</td>
 					<td>@Html.DisplayFor(e => employee.IsActive)</td>
 					<td>@Html.DisplayFor(e => employee.Gender)</td>
-					<partial name="_ButtonsPartial" model="@employee.Id" />
+					<partial name="_ButtonsPartial" model="@employee.Id.ToString()" />
 
 				</tr>
 				<!-- Modal -->

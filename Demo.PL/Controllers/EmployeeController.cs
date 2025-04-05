@@ -31,6 +31,11 @@ namespace Demo.PL.Controllers
             var employees = await _employeeService.GetEmployeesAsync(SearchValue);
             return View(employees);
         }
+        public async Task<IActionResult> Search(string SearchValue)
+        {
+            var employees = await _employeeService.GetEmployeesAsync(SearchValue);
+            return View("Partials/EmployeeTablePartial",employees);
+        }
         #endregion
 
         #region Create

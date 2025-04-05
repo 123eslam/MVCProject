@@ -29,7 +29,7 @@
 	<div class="col-6">
 		<form class="row justify-content-end mt-5" method="get" asp-controller="Employee" asp-action="Index">
 			<div class="col-6">
-				<input type="search" name="SearchValue" class="form-control" placeholder="Search by employee name" />
+				<input type="search" name="SearchValue" class="form-control" id="Searchinp" placeholder="Search by employee name" />
 			</div>
 			<div class="col-2">
 				<input class="btn btn-outline-secondary" type="submit" value="Searsh" />
@@ -105,4 +105,26 @@ else
 		<h2>No Employees Found !!</h2>
 	</div>
 }
+
+<script>
+	const searchBar = $('#Searchinp');
+	const table = $('table');
+	searchBar.on ('keyup', function(event)
+	{
+		var searchValue = searchBar.Val();
+		$.ajax(
+			{
+				url: '/Employee/Search',
+				type: 'Get',
+				data: {searchInp, searchValue },
+				success: function (result) {
+					table.html(result);
+				},
+				error: function (xhr, status, error) {
+					console.log(error);
+				}
+			}
+		)
+	})
+</script>
 

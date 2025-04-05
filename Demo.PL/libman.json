@@ -1,0 +1,16 @@
+{
+  "version": "3.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "sweetalert2@11.16.1",
+      "destination": "wwwroot/lib/sweetalert2/",
+      "files": [
+        "sweetalert2.all.js",
+        "sweetalert2.all.min.js",
+        "sweetalert2.css",
+        "sweetalert2.min.css"
+      ]
+    }
+  ]
+}

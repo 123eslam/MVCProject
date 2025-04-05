@@ -1,12 +1,13 @@
-﻿using Demo.BLL.Dtos.Employees;
-using Demo.DAL.Entities.Identity;
+﻿using Demo.DAL.Entities.Identity;
 using Demo.PL.ViewModels.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.PL.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UserController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

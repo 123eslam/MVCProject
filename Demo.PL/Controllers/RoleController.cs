@@ -1,21 +1,25 @@
 ﻿using Demo.DAL.Entities.Identity;
 using Demo.PL.ViewModels.Roles;
 using Demo.PL.ViewModels.Users;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.PL.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class RoleController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<UserController> _logger;
 
-        public RoleController(RoleManager<IdentityRole> roleManager, IWebHostEnvironment environment, ILogger<UserController> logger)
+        public RoleController(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager, IWebHostEnvironment environment, ILogger<UserController> logger)
         {
             _roleManager = roleManager;
+            _userManager = userManager;
             _environment = environment;
             _logger = logger;
         }
@@ -96,10 +100,17 @@ namespace Demo.PL.Controllers
             var role = await _roleManager.FindByIdAsync(id);
             if (role is null)
                 return NotFound();
+            var users = await _userManager.Users.ToListAsync();
             var roleVM = new RoleViewModel()
             {
                 Id = role.Id,
-                Name = role.Name
+                Name = role.Name,
+                Users = users.Select(user => new UserRoleViewModel()
+                {
+                    UserId = user.Id,
+                    UserName = user.UserName,
+                    IsSelected = _userManager.IsInRoleAsync(user, role.Name).Result
+                }).ToList()
             };
             return View(roleVM);
         }
@@ -117,6 +128,17 @@ namespace Demo.PL.Controllers
                     return NotFound();
                 role.Name = roleVM.Name;
                 var result = await _roleManager.UpdateAsync(role);
+                foreach(var userRole in roleVM.Users)
+                {
+                    var user = await _userManager.FindByIdAsync(userRole.UserId);
+                    if(user is not null)
+                    {
+                        if (userRole.IsSelected && !(await _userManager.IsInRoleAsync(user, role.Name)))
+                            await _userManager.AddToRoleAsync(user, role.Name);
+                        else if(!userRole.IsSelected && await _userManager.IsInRoleAsync(user, role.Name))
+                            await _userManager.RemoveFromRoleAsync(user, role.Name);
+                    }
+                }
                 if (result.Succeeded)
                     return RedirectToAction(nameof(Index));
                 else

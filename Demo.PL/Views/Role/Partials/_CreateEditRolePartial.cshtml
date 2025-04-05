@@ -1,0 +1,21 @@
+﻿@model RoleViewModel
+
+<form method="post" asp-action="@ViewData["Title"]" class="col-8" >
+	<div asp-validation-summary="ModelOnly"></div>
+	<div class="form-floating mt-3">
+		<input class="form-control" asp-for="Name" placeholder="">
+		<label asp-for="Name">Name</label>
+		<span asp-validation-for="Name" class="text-danger"></span>
+	</div>
+	<div class="m-auto mt-4">
+		@if (ViewData["Title"] as string == "Create")
+		{
+			<input type="submit" class="btn btn-primary" value="Create">
+		}
+		else
+		{
+			<input type="submit" class="btn btn-success" value="Edit">
+		}
+		<a asp-controller="Role" asp-action="Index" class="btn btn-outline-dark">Back to list</a>
+	</div>
+</form>

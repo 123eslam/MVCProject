@@ -28,8 +28,6 @@ namespace Demo.PL.Controllers
         public async Task<IActionResult> Index(string SearchValue)
         {
             var projects = await _projectService.GetProjectsAsync(SearchValue);
-            Console.WriteLine(User.Identity.IsAuthenticated); 
-            Console.WriteLine(User.Identity.Name);
             return View(projects);
         }
         #endregion

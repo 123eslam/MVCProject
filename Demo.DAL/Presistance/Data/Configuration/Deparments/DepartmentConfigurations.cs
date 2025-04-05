@@ -22,6 +22,10 @@ namespace Demo.DAL.Presistance.Data.Configuration.Deparments
                 .WithOne(E => E.Department)
                 .HasForeignKey(E => E.DepartmentId)
                 .OnDelete(DeleteBehavior.SetNull);
+            builder.HasMany(D => D.Projects)
+                .WithOne(P => P.Department)
+                .HasForeignKey(P => P.DepartmentId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

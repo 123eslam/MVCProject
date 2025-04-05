@@ -2,6 +2,7 @@ using Demo.BLL.Common.Services.Attachment_Services;
 using Demo.BLL.Common.Services.EmailSettings;
 using Demo.BLL.Services.Departments;
 using Demo.BLL.Services.Employees;
+using Demo.BLL.Services.Projects;
 using Demo.DAL.Entities.Identity;
 using Demo.DAL.Presistance.Data.Context;
 using Demo.DAL.Presistance.UnitOfWork;
@@ -30,6 +31,7 @@ namespace Demo.PL
 
             //builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+            builder.Services.AddScoped<IProjectService, ProjectService>();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -49,13 +51,20 @@ namespace Demo.PL
             }).AddEntityFrameworkStores<ApplicationDbContext>()
               .AddDefaultTokenProviders();//PasswordSignInAsync depend on AddDefaultTokenProviders
 
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.LoginPath = "/Acount/Login";
-                    options.AccessDeniedPath = "/Home/Error";
-                    options.LogoutPath = "/Acount/Login";
-                });
+            //builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            //    .AddCookie(options =>
+            //    {
+            //        options.LoginPath = "/Acount/Login";
+            //        options.LogoutPath = "/Acount/Login";
+            //        options.AccessDeniedPath = "/Home/Error";
+            //    });
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.ExpireTimeSpan = TimeSpan.FromDays(2);
+                options.LoginPath = "/Acount/Login";
+                options.LogoutPath = "/Acount/Login";
+                options.AccessDeniedPath = "/Home/Error";
+            });
 
             var app = builder.Build();
             

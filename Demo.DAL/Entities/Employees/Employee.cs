@@ -1,6 +1,5 @@
 ﻿using Demo.DAL.Common.Enums;
 using Demo.DAL.Entities.Departments;
-using System.ComponentModel.DataAnnotations;
 
 namespace Demo.DAL.Entities.Employees
 {

@@ -1,4 +1,5 @@
-﻿using Demo.BLL.Dtos.Departments;
+﻿using Demo.BLL.Common.Services.GetUsereLogin;
+using Demo.BLL.Dtos.Departments;
 using Demo.DAL.Entities.Departments;
 using Demo.DAL.Presistance.Repostories.Departmemts;
 using Demo.DAL.Presistance.UnitOfWork;
@@ -15,9 +16,12 @@ namespace Demo.BLL.Services.Departments
         //    _departmentRepository = departmentRepository;
         //}
         private readonly IUnitOfWork _unitOfWork;
-        public DepartmentService(IUnitOfWork unitOfWork)
+        private readonly IGetuserLogin _getuserLogin;
+
+        public DepartmentService(IUnitOfWork unitOfWork,IGetuserLogin getuserLogin)
         {
             _unitOfWork = unitOfWork;
+            _getuserLogin = getuserLogin;
         }
         public async Task<IEnumerable<DepartmentToReturnDto>> GetDepartmentsAsync()
         {
@@ -75,8 +79,8 @@ namespace Demo.BLL.Services.Departments
                 Description = entity.Description,
                 Code = entity.Code,
                 CreationDate = entity.CreationDate,
-                CreatedBy = 1, //UserId
-                LastModifiedBy = 1, //UserId
+                CreatedBy = await _getuserLogin.GetUserNameLoginAsync(), //UserId
+                LastModifiedBy = await _getuserLogin.GetUserNameLoginAsync(), //UserId
                 LastModifiedOn = DateTime.UtcNow
             };
             _unitOfWork.DepartmentRepository.Add(department);
@@ -84,16 +88,25 @@ namespace Demo.BLL.Services.Departments
         }
         public async Task<int> UpdateDepartmentAsync(DepartmentToUpdateDto entity)
         {
-            var department = new Department()
-            {
-                Id = entity.Id,
-                Name = entity.Name,
-                Description = entity.Description,
-                Code = entity.Code,
-                CreationDate = entity.CreationDate,
-                LastModifiedBy = 1, //UserId
-                LastModifiedOn = DateTime.UtcNow
-            };
+            var department = await _unitOfWork.DepartmentRepository.GetByIdAsync(entity.Id);
+            if (department is null)
+                return 0;
+            department.Name = entity.Name;
+            department.Description = entity.Description;
+            department.Code = entity.Code;
+            department.CreationDate = entity.CreationDate;
+            department.LastModifiedBy = await _getuserLogin.GetUserNameLoginAsync(); //UserId
+            department.LastModifiedOn = DateTime.UtcNow;
+            //var department = new Department()
+            //{
+            //    Id = entity.Id,
+            //    Name = entity.Name,
+            //    Description = entity.Description,
+            //    Code = entity.Code,
+            //    CreationDate = entity.CreationDate,
+            //    LastModifiedBy = await _getuserLogin.GetUserNameLoginAsync(), //UserId
+            //    LastModifiedOn = DateTime.UtcNow
+            //};
             _unitOfWork.DepartmentRepository.Update(department);
             return await _unitOfWork.CompleteAsync();
         }

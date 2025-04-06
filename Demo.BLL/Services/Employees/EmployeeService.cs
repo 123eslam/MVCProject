@@ -1,9 +1,15 @@
-﻿using Demo.BLL.Common.Services.Attachment_Services;
+﻿using Azure;
+using Demo.BLL.Common.Services.Attachment_Services;
+using Demo.BLL.Common.Services.GetUsereLogin;
 using Demo.BLL.Dtos.Employees;
+using Demo.DAL.Common.Enums;
+using Demo.DAL.Entities.Departments;
 using Demo.DAL.Entities.Employees;
+using Demo.DAL.Entities.Identity;
 using Demo.DAL.Presistance.Repostories.Employees;
 using Demo.DAL.Presistance.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 namespace Demo.BLL.Services.Employees
 {
@@ -17,11 +23,13 @@ namespace Demo.BLL.Services.Employees
         //}
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAttachmentService _attachmentService;
+        private readonly IGetuserLogin _getuserLogin;
 
-        public EmployeeService(IUnitOfWork unitOfWork ,IAttachmentService attachmentService)
+        public EmployeeService(IUnitOfWork unitOfWork ,IAttachmentService attachmentService,IGetuserLogin getuserLogin)
         {
             _unitOfWork = unitOfWork;
             _attachmentService = attachmentService;
+            _getuserLogin = getuserLogin;
         }
         public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync(string SearchValue)
         {
@@ -87,8 +95,8 @@ namespace Demo.BLL.Services.Employees
                 HiringDate = entity.HiringDate,
                 Gender = entity.Gender,
                 EmployeeType = entity.EmployeeType,
-                CreatedBy = 1,
-                LastModifiedBy = 1,
+                CreatedBy = await _getuserLogin.GetUserNameLoginAsync(),
+                LastModifiedBy = await _getuserLogin.GetUserNameLoginAsync(),
                 LastModifiedOn = DateTime.UtcNow,
                 DepartmentId = entity.DepartmentId
             };
@@ -99,23 +107,22 @@ namespace Demo.BLL.Services.Employees
         }
         public async Task<int> UpdateEmployeeAsync(UpdateEmployeeDto entity)
         {
-            var employee = new Employee()
-            {
-                Id = entity.Id,
-                Name = entity.Name,
-                Age = entity.Age,
-                Address = entity.Address,
-                Salary = entity.Salary,
-                IsActive = entity.IsActive,
-                Email = entity.Email,
-                PhoneNumber = entity.PhoneNumber,
-                HiringDate = entity.HiringDate,
-                Gender = entity.Gender,
-                EmployeeType = entity.EmployeeType,
-                LastModifiedBy = 1,
-                LastModifiedOn = DateTime.UtcNow,
-                DepartmentId = entity.DepartmentId
-            };
+            var employee = await _unitOfWork.EmployeeRepository.GetByIdAsync(entity.Id);
+            if (employee is null)
+                return 0;
+            employee.Name = entity.Name;
+            employee.Age = entity.Age;
+            employee.Address = entity.Address;
+            employee.Salary = entity.Salary;
+            employee.IsActive = entity.IsActive;
+            employee.Email = entity.Email;
+            employee.PhoneNumber = entity.PhoneNumber;
+            employee.HiringDate = entity.HiringDate;
+            employee.Gender = entity.Gender;
+            employee.EmployeeType = entity.EmployeeType;
+            employee.LastModifiedBy = await _getuserLogin.GetUserNameLoginAsync();
+            employee.LastModifiedOn = DateTime.UtcNow;
+            employee.DepartmentId = entity.DepartmentId;
             if (entity.Image is not null)
                 employee.Image = await _attachmentService.UploadAsync(entity.Image, "images");
             _unitOfWork.EmployeeRepository.Update(employee);

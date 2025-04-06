@@ -1,5 +1,6 @@
 using Demo.BLL.Common.Services.Attachment_Services;
 using Demo.BLL.Common.Services.EmailSettings;
+using Demo.BLL.Common.Services.GetUsereLogin;
 using Demo.BLL.Services.Departments;
 using Demo.BLL.Services.Employees;
 using Demo.BLL.Services.Projects;
@@ -40,6 +41,8 @@ namespace Demo.PL
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfile()));
             builder.Services.AddTransient<IAttachmentService, AttachmentService>();
             builder.Services.AddScoped<IEmailSettings, EmailSettings>();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<IGetuserLogin, GetuserLogin>();
             //builder.Services.AddScoped<UserManager<ApplicationUser>>();
             //builder.Services.AddScoped<SignInManager<ApplicationUser>>();
             //builder.Services.AddScoped<RoleManager<IdentityRole>>();

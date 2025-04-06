@@ -9,11 +9,11 @@ namespace Demo.BLL.Dtos.Projects
         public string Location { get; set; }
         public string City { get; set; }
         [Display(Name = "Created By")]
-        public int CreatedBy { get; set; }
+        public string CreatedBy { get; set; } = string.Empty;
         [Display(Name = "Created On")]
         public DateTime CreatedOn { get; set; }
         [Display(Name = "Last Modified By")]
-        public int LastModifiedBy { get; set; }
+        public string LastModifiedBy { get; set; } = string.Empty;
         [Display(Name = "Last Modified On")]
         public DateTime LastModifiedOn { get; set; }
         public string? Department { get; set; }

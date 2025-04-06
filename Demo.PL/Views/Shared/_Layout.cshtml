@@ -4,70 +4,91 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Company System</title>
-	@* <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" /> *@
-	<link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- تحسين ترتيب وأسلوب تحميل ملفات CSS -->
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Demo.PL.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- استخدام CDN أكثر موثوقية لـ Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="icon" type="image/x-icon" href="~/img/favicon.ico" />
+    <!-- إضافة meta tags مهمة -->
+    <meta name="description" content="Company Management System">
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
-            <div class="container-fluid">
-                <a class="navbar-brand p-0 me-0 me-lg-2" asp-area="" asp-controller="Home" asp-action="Index">
-					<img src="~/img/companylogo.jpg" alt="Logo" class="logo" height="30" width="50" />
+        <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
+            <div class="container">
+                <!-- تحسين شعار الشركة -->
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/img/companylogo.jpg" alt="Company Logo" class="d-inline-block align-top logo rounded shadow-sm" height="40">
                 </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav me-auto">
+                        <!-- تبسيط عناصر القائمة -->
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i>Home
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-controller="Department" asp-action="Index">
+                                <i class="fas fa-building me-1"></i>Departments
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Department" asp-action="Index">Departments</a>
+                            <a class="nav-link" asp-controller="Employee" asp-action="Index">
+                                <i class="fas fa-users me-1"></i>Employees
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="fas fa-cog me-1"></i>Admin
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-controller="User" asp-action="Index">Users</a></li>
+                                <li><a class="dropdown-item" asp-controller="Role" asp-action="Index">Roles</a></li>
+                            </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Employee" asp-action="Index">Employees</a>
+                            <a class="nav-link" asp-controller="Project" asp-action="Index">
+                                <i class="fas fa-project-diagram me-1"></i>Projects
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Users</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Role" asp-action="Index">Roles</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Project" asp-action="Index">Projects</a>
+                            <a class="nav-link" asp-controller="WorksOn" asp-action="Index">
+                                <i class="fas fa-tasks me-1"></i>Works
+                            </a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav flex-row flex-wrap ms-md-auto">
-                        <li class="nav-item">
-                            <a class="btn btn-outline-danger" asp-area="" asp-controller="Acount" asp-action="SignOut">Sign Out</a>
-                        </li>
-                    </ul>
+                    <div class="d-flex">
+                        <a class="btn btn-outline-light" asp-controller="Acount" asp-action="SignOut">
+                            <i class="fas fa-sign-out-alt me-1"></i>Sign Out
+                        </a>
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            <script src="~/lib/jquery/dist/jquery.min.js"></script>
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
+    <main class="container my-4">
+        @RenderBody()
+    </main>
+
+    <footer class="border-top footer mt-auto py-3 bg-light text-center">
         <div class="container">
-            &copy; @DateTime.Now.Year - Company - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <span class="text-muted">&copy; @DateTime.Now.Year - Company</span> |
+            <a class="text-decoration-none" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
+    <!-- تحسين ترتيب وأسلوب تحميل ملفات JavaScript -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-	@await RenderSectionAsync("ValidationScripts", required: false)
+    @await RenderSectionAsync("ValidationScripts", required: false)
 </body>
 </html>

@@ -1,4 +1,6 @@
-﻿using Demo.BLL.Dtos.Projects;
+﻿using Demo.BLL.Common.Services.GetUsereLogin;
+using Demo.BLL.Dtos.Projects;
+using Demo.DAL.Entities.Departments;
 using Demo.DAL.Entities.Identity;
 using Demo.DAL.Entities.Projects;
 using Demo.DAL.Presistance.UnitOfWork;
@@ -11,12 +13,15 @@ namespace Demo.BLL.Services.Projects
     public class ProjectService : IProjectService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IGetuserLogin _getuserLogin;
+
         //private readonly UserManager<ApplicationUser> _userManager;
         //private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ProjectService(IUnitOfWork unitOfWork/*, UserManager<ApplicationUser> userManager , IHttpContextAccessor httpContextAccessor*/) 
+        public ProjectService(IUnitOfWork unitOfWork,IGetuserLogin getuserLogin/*, UserManager<ApplicationUser> userManager , IHttpContextAccessor httpContextAccessor*/) 
         {
             _unitOfWork = unitOfWork;
+            _getuserLogin = getuserLogin;
             //_userManager = userManager;
             //_httpContextAccessor = httpContextAccessor;
         }
@@ -30,24 +35,25 @@ namespace Demo.BLL.Services.Projects
                 Location = entity.Location,
                 City = entity.City,
                 DepartmentId = entity.DepartmentId,
-                CreatedBy = 1, //user.Id is string
-                LastModifiedBy = 1,
+                CreatedOn = DateTime.UtcNow,
+                CreatedBy = await _getuserLogin.GetUserNameLoginAsync(), //user.Id is string
+                LastModifiedBy = await _getuserLogin.GetUserNameLoginAsync(),
                 LastModifiedOn = DateTime.UtcNow
             });
             return await _unitOfWork.CompleteAsync();
         }
-        public async Task<int> UpdateProjectAsync(UpdateProjectDto entity)
+        public async Task<int> UpdateProjectAsync(UpdateProjectDto entity) 
         {
-            _unitOfWork.ProjectRepository.Update(new Project
-            {
-                Id = entity.Id,
-                Name = entity.Name,
-                Location = entity.Location,
-                City = entity.City,
-                DepartmentId = entity.DepartmentId,
-                LastModifiedBy = 1, //user.Id is string
-                LastModifiedOn = DateTime.UtcNow
-            });
+            var project = await _unitOfWork.ProjectRepository.GetByIdAsync(entity.Id);
+            if (project is null)
+                return 0;
+            project.Name = entity.Name;
+            project.Location = entity.Location;
+            project.City = entity.City;
+            project.DepartmentId = entity.DepartmentId;
+            project.LastModifiedBy = await _getuserLogin.GetUserNameLoginAsync(); //user.Id is string
+            project.LastModifiedOn = DateTime.UtcNow;
+            _unitOfWork.ProjectRepository.Update(project);
             return await _unitOfWork.CompleteAsync();
         }
         public async Task<bool> DeleteProjectAsync(int id)
@@ -58,7 +64,6 @@ namespace Demo.BLL.Services.Projects
                 projectRepository.Delete(project);
             return await _unitOfWork.CompleteAsync() > 0;
         }
-
         public async Task<ProjectDetailsDto?> GetProjectByIdAsync(int id)
         {
             var project = await _unitOfWork.ProjectRepository.GetByIdAsync(id);
@@ -78,7 +83,6 @@ namespace Demo.BLL.Services.Projects
                 Department = project.Department?.Name
             };
         }
-
         public async Task<IEnumerable<ProjectDto>> GetProjectsAsync(string SearchValue)
         {
             var query = await _unitOfWork.ProjectRepository.GetAllQueryable()

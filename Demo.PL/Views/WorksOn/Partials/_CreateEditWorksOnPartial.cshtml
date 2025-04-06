@@ -1,0 +1,40 @@
+﻿@model UpdateEmployeeWorkOnProjectDto
+@inject IEmployeeService employeeService 
+@inject IProjectService projectService 
+@{
+	var employees = new SelectList(await employeeService.GetEmployeesAsync(string.Empty), nameof(EmployeeDto.Id), nameof(EmployeeDto.Name));
+	var projects = new SelectList(await projectService.GetProjectsAsync(string.Empty), nameof(ProjectDto.Id), nameof(ProjectDto.Name));
+}
+<form method="post" asp-action="@ViewData["Title"]" class="col-8" enctype="multipart/form-data">
+	<div asp-validation-summary="ModelOnly"></div>
+	<div class="form-group mt-3">
+		<label asp-for="ProjectId" class="control-label mb-2">Project</label>
+		<select asp-for="ProjectId" asp-items="@projects" class="form-control">
+			<option value="@null">Select Project</option>
+		</select>
+		<span asp-validation-for="ProjectId" class="text-danger"></span>
+	</div>
+	<div class="form-group mt-3">
+		<label asp-for="EmployeeId" class="control-label mb-2">Employee</label>
+		<select asp-for="EmployeeId" asp-items="@employees" class="form-control">
+			<option value="@null">Select Employee</option>
+		</select>
+		<span asp-validation-for="EmployeeId" class="text-danger"></span>
+	</div>
+	<div class="form-floating mt-3">
+		<input class="form-control" asp-for="NumOfHours" placeholder="">
+		<label asp-for="NumOfHours"></label>
+		<span asp-validation-for="NumOfHours" class="text-danger"></span>
+	</div>
+	<div class="m-auto mt-4">
+		@if (ViewData["Title"] as string == "Create")
+		{
+			<input type="submit" class="btn btn-primary" value="Create">
+		}
+		else
+		{
+			<input type="submit" class="btn btn-success" value="Edit">
+		}
+		<a asp-controller="WorksOn" asp-action="Index" class="btn btn-outline-dark">Back to list</a>
+	</div>
+</form>

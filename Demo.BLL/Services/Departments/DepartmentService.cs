@@ -91,7 +91,6 @@ namespace Demo.BLL.Services.Departments
                 Description = entity.Description,
                 Code = entity.Code,
                 CreationDate = entity.CreationDate,
-                CreatedBy = 1, //UserId
                 LastModifiedBy = 1, //UserId
                 LastModifiedOn = DateTime.UtcNow
             };

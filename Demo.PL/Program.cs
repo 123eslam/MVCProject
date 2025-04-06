@@ -3,12 +3,14 @@ using Demo.BLL.Common.Services.EmailSettings;
 using Demo.BLL.Services.Departments;
 using Demo.BLL.Services.Employees;
 using Demo.BLL.Services.Projects;
+using Demo.BLL.Services.WorkOn;
 using Demo.DAL.Entities.Identity;
 using Demo.DAL.Presistance.Data.Context;
 using Demo.DAL.Presistance.UnitOfWork;
 using Demo.PL.Mapping.Profiles;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.PL
@@ -32,7 +34,7 @@ namespace Demo.PL
             //builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
             builder.Services.AddScoped<IProjectService, ProjectService>();
-
+            builder.Services.AddScoped<IWorkOnService, WorkOnService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfile()));

@@ -112,7 +112,6 @@ namespace Demo.BLL.Services.Employees
                 HiringDate = entity.HiringDate,
                 Gender = entity.Gender,
                 EmployeeType = entity.EmployeeType,
-                CreatedBy = 1,
                 LastModifiedBy = 1,
                 LastModifiedOn = DateTime.UtcNow,
                 DepartmentId = entity.DepartmentId

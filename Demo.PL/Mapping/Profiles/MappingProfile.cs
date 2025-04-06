@@ -2,6 +2,7 @@
 using Demo.BLL.Dtos.Departments;
 using Demo.BLL.Dtos.Employees;
 using Demo.BLL.Dtos.Projects;
+using Demo.BLL.Dtos.WorkOn;
 using Demo.PL.ViewModels.Departments;
 
 namespace Demo.PL.Mapping.Profiles
@@ -22,9 +23,15 @@ namespace Demo.PL.Mapping.Profiles
                 .ForMember(dest => dest.Image, opt => opt.MapFrom(src => ConvertToIFormFile(src.Image)));
 
             #endregion
+
             #region Project Module
             CreateMap<UpdateProjectDto, CreateProjectDto>();
             CreateMap<ProjectDetailsDto, UpdateProjectDto>();
+            #endregion
+
+            #region Work on project
+            CreateMap<UpdateEmployeeWorkOnProjectDto, AssignEmployeeWorkOnProjectDto>();
+            CreateMap<EmployeeWorkOnProjectDetailsDto, UpdateEmployeeWorkOnProjectDto>();
             #endregion
         }
         private static IFormFile? ConvertToIFormFile(string? image)

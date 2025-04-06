@@ -1,4 +1,5 @@
 ﻿using Demo.DAL.Entities.Departments;
+using Demo.DAL.Entities.ProjectEmployees;
 
 namespace Demo.DAL.Entities.Projects
 {
@@ -11,5 +12,7 @@ namespace Demo.DAL.Entities.Projects
         public virtual Department? Department { get; set; }
         //Foreign Key
         public int? DepartmentId { get; set; }
+        //Navigation Properties [Many]
+        public virtual ICollection<ProjectEmployee> ProjectEmployees { get; set; } = new HashSet<ProjectEmployee>();
     }
 }

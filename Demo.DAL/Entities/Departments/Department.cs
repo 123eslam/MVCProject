@@ -1,9 +1,5 @@
 ﻿using Demo.DAL.Entities.Employees;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Demo.DAL.Entities.Projects;
 
 namespace Demo.DAL.Entities.Departments
 {
@@ -15,5 +11,7 @@ namespace Demo.DAL.Entities.Departments
         public DateOnly CreationDate { get; set; }
         //Navigation Properties [Many]
         public virtual ICollection<Employee> Employees { get; set; } = new HashSet<Employee>();
+        //Navigation Properties [Many]
+        public virtual ICollection<Project> Projects { get; set; } = new HashSet<Project>();
     }
 }

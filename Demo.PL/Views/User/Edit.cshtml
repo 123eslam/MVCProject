@@ -1,0 +1,35 @@
+﻿@model UsersViewModel
+@{
+	ViewData["Title"] = "Edit";
+}
+
+<div class="row justify-content-center align-content-center mt-3">
+	<h1 class="col-8 my-4">Edit User</h1>
+	<form method="post" asp-action="Edit" class="col-8">
+		<div asp-validation-summary="ModelOnly"></div>
+		<div class="form-floating mt-3">
+			<input class="form-control" asp-for="FName" placeholder="">
+			<label asp-for="FName">First Name</label>
+			<span asp-validation-for="FName" class="text-danger"></span>
+		</div>
+		<div class="form-floating mt-3">
+			<input class="form-control" asp-for="LName" placeholder="">
+			<label asp-for="LName">Last Name</label>
+			<span asp-validation-for="LName" class="text-danger"></span>
+		</div>
+		<div class="form-floating mt-3">
+			<input class="form-control" asp-for="Email" placeholder="">
+			<label asp-for="Email">Email</label>
+			<span asp-validation-for="Email" class="text-danger"></span>
+		</div>
+		<div class="m-auto mt-4">
+			<input type="submit" class="btn btn-success" value="Edit">
+			<a asp-controller="User" asp-action="Index" class="btn btn-outline-dark">Back to list</a>
+		</div>
+	</form>
+</div>
+
+@section ValidationScripts {
+	<partial name="_ValidationScriptsPartial" />
+}
+

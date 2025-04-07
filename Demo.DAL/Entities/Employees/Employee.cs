@@ -1,6 +1,6 @@
 ﻿using Demo.DAL.Common.Enums;
 using Demo.DAL.Entities.Departments;
-using System.ComponentModel.DataAnnotations;
+using Demo.DAL.Entities.ProjectEmployees;
 
 namespace Demo.DAL.Entities.Employees
 {
@@ -21,5 +21,7 @@ namespace Demo.DAL.Entities.Employees
         //Foreign Key
         public int? DepartmentId { get; set; }
         public string? Image { get; set; } //ImageName
+        //Navigation Properties [Many]
+        public virtual ICollection<ProjectEmployee> ProjectEmployees { get; set; } = new HashSet<ProjectEmployee>();
     }
 }

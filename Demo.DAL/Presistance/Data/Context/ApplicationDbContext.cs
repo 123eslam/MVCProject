@@ -1,6 +1,7 @@
 ﻿using Demo.DAL.Entities.Departments;
 using Demo.DAL.Entities.Employees;
 using Demo.DAL.Entities.Identity;
+using Demo.DAL.Entities.Projects;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -24,6 +25,7 @@ namespace Demo.DAL.Presistance.Data.Context
         }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<Project> Projects { get; set; }
         //public DbSet<IdentityUser> Users { get; set; }
         //public DbSet<IdentityRole> Roles { get; set; }
     }

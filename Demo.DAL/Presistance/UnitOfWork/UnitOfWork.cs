@@ -1,11 +1,8 @@
 ﻿using Demo.DAL.Presistance.Data.Context;
 using Demo.DAL.Presistance.Repostories.Departmemts;
 using Demo.DAL.Presistance.Repostories.Employees;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Demo.DAL.Presistance.Repostories.ProjectEmployees;
+using Demo.DAL.Presistance.Repostories.Projects;
 
 namespace Demo.DAL.Presistance.UnitOfWork
 {
@@ -20,6 +17,8 @@ namespace Demo.DAL.Presistance.UnitOfWork
         public IDepartmentRepository DepartmentRepository => new DepartmentRepository(_dbContext);
 
         public IEmployeeRepository EmployeeRepository => new EmployeeRepository(_dbContext);
+        public IProjectRepository ProjectRepository => new ProjectRepository(_dbContext);
+        public IProjectEmployeeRepository ProjectEmployeeRepository => new ProjectEmployeeRepository(_dbContext);
 
         public async Task<int> CompleteAsync()
         {

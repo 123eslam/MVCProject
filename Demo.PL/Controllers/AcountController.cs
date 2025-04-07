@@ -1,4 +1,5 @@
-﻿using Demo.DAL.Entities.Identity;
+﻿using Demo.BLL.Common.Services.EmailSettings;
+using Demo.DAL.Entities.Identity;
 using Demo.PL.ViewModels.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,12 +9,14 @@ namespace Demo.PL.Controllers
     public class AcountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly Microsoft.AspNetCore.Identity.SignInManager<ApplicationUser> _signInManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEmailSettings _emailSettings;
 
-        public AcountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AcountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSettings emailSettings)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _emailSettings = emailSettings;
         }
         //Register , Login , Signout
         [HttpGet] //Display Register Form
@@ -85,6 +88,73 @@ namespace Demo.PL.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Login");
+        }
+        //Forget Password
+        [HttpGet]
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> SendResetPasswordUrl(ForgetPasswordViewModel forgetPasswordVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(forgetPasswordVM.Email);
+                if(user is not null)
+                {
+                    //Generate Url to reset password
+                    //https://localhost:44312//Acount/ResetPassword?email=eslam@gmail.come&&token=mferifnire45j4jk34nr3rnk
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var url = Url.Action("ResetPassword", "Acount", new { email = forgetPasswordVM.Email, token = token }, Request.Scheme);
+                    //To ,Subject ,Body (Emial) ==> {To ,Subject ,Body}
+                    var email = new Email()
+                    {
+                        To = forgetPasswordVM.Email,
+                        Subject = "Reset Your Password",
+                        Body = url
+                        //URL to reset password => BaseUrl/Acount/ResetPassword?email=eslam@gmail.come&&token=mferifnire45j4jk34nr3rnk
+                    };
+                    //Send Email
+                    _emailSettings.SendEmail(email);
+                    return RedirectToAction("CheckYourInbox");
+                }
+                ModelState.AddModelError(string.Empty, "Invalid operation");
+            }
+            return View(forgetPasswordVM);
+        }
+        [HttpGet]
+        public IActionResult CheckYourInbox()
+        {
+            return View();
+        }
+        //Reset Password action
+        [HttpGet]
+        public IActionResult ResetPassword(string email, string token)
+        {
+            TempData["Email"] = email;
+            TempData["Token"] = token;
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel resetPasswordVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var email = TempData["Email"] as string;
+                var token = TempData["Token"] as string;
+                var user = await _userManager.FindByEmailAsync(email);
+                if(user is not null)
+                {
+                    var result = await _userManager.ResetPasswordAsync(user, token, resetPasswordVM.Password);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction(nameof(Login));
+                    }
+                }
+            }
+            ModelState.AddModelError(string.Empty, "Invalid operation");
+            return View(resetPasswordVM);
         }
     }
 }

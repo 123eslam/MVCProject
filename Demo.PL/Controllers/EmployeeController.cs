@@ -31,10 +31,11 @@ namespace Demo.PL.Controllers
             var employees = await _employeeService.GetEmployeesAsync(SearchValue);
             return View(employees);
         }
+        [HttpGet]
         public async Task<IActionResult> Search(string SearchValue)
         {
             var employees = await _employeeService.GetEmployeesAsync(SearchValue);
-            return View("Partials/EmployeeTablePartial",employees);
+            return PartialView("Partials/EmployeeTablePartial",employees);
         }
         #endregion
 

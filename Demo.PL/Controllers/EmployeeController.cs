@@ -60,10 +60,12 @@ namespace Demo.PL.Controllers
                 if (Result > 0)
                 {
                     TempData["Message"] = "Employee created successfully";
+                    TempData["MessageType"] = "success";
                 }
                 else
                 {
                     message = "Failed to create Employee";
+                    TempData["MessageType"] = "error";
                     TempData["Message"] = message;
                     ModelState.AddModelError(string.Empty, message);
                 }
@@ -80,6 +82,8 @@ namespace Demo.PL.Controllers
                 else
                 {
                     message = "Failed to create Employee";
+                    TempData["Message"] = message;
+                    TempData["MessageType"] = "error";
                     return View("Error", message);
                 }
             }
@@ -122,15 +126,25 @@ namespace Demo.PL.Controllers
             {
                 var result = await _employeeService.UpdateEmployeeAsync(employee);
                 if (result > 0)
+                {
+                    message = "Employee Edited successfully";
+                    TempData["Message"] = message;
+                    TempData["MessageType"] = "success";
                     return RedirectToAction(nameof(Index));
+                }
                 else
                 {
                     message = "Failed to update employee";
+                    TempData["Message"] = message;
+                    TempData["MessageType"] = "error";
+                    return RedirectToAction(nameof(Index));
                 }
             }
             catch (Exception ex)
             {
                 message = _environment.IsDevelopment() ? ex.Message : "Failed to update employee";
+                TempData["Message"] = message;
+                TempData["MessageType"] = "error";
             }
             return View(employee);
         }
@@ -156,16 +170,25 @@ namespace Demo.PL.Controllers
             {
                 var result = await _employeeService.DeleteEmployeeAsync(id);
                 if (result)
+                {
+                    message = "Employee deleted successfully";
+                    TempData["Message"] = message;
+                    TempData["MessageType"] = "success";
                     return RedirectToAction(nameof(Index));
+                }
                 else
                 {
                     message = "Failed to delete employee";
+                    TempData["Message"] = message;
+                    TempData["MessageType"] = "error";
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
                 message = _environment.IsDevelopment() ? ex.Message : "Failed to delete employee";
+                TempData["Message"] = message;
+                TempData["MessageType"] = "error";
             }
             return View(nameof(Index));
         } 

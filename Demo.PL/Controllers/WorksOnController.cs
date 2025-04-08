@@ -51,11 +51,13 @@ namespace Demo.PL.Controllers
                 if (Result > 0)
                 {
                     TempData["Message"] = "Employee assign to work on project successfully";
+                    TempData["MessageType"] = "success";
                 }
                 else
                 {
-                    message = "Failed to assign Employee to work on project";
+                    message = "Failed to assign Employee to work on project, The Employee and the project may not belong to the same department.";
                     TempData["Message"] = message;
+                    TempData["MessageType"] = "error";
                     ModelState.AddModelError(string.Empty, message);
                 }
                 return RedirectToAction(nameof(Index));
@@ -70,7 +72,9 @@ namespace Demo.PL.Controllers
                 }
                 else
                 {
-                    message = "Failed to assign Employee to work on project";
+                    message = "Failed to assign Employee to work on project, The Employee and the project may not belong to the same department.";
+                    TempData["Message"] = message;
+                    TempData["MessageType"] = "error";
                     return View("Error", message);
                 }
             }
@@ -113,15 +117,23 @@ namespace Demo.PL.Controllers
             {
                 var result = await _workOnService.UpdateEmployeeToWorkOnProjectAsync(workOnProjectDto);
                 if (result > 0)
-                    return RedirectToAction(nameof(Index));
+                {
+                    TempData["Message"] = "Employee update to work on project successfully";
+                    TempData["MessageType"] = "success";
+                }
                 else
                 {
                     message = "Failed to update employee to work on project";
+                    TempData["Message"] = message;
+                    TempData["MessageType"] = "error";
                 }
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 message = _environment.IsDevelopment() ? ex.Message : "Failed to update employee to work on project";
+                TempData["Message"] = message;
+                TempData["MessageType"] = "error";
             }
             return View(workOnProjectDto);
         }

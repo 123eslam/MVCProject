@@ -98,13 +98,23 @@ namespace Demo.PL.Controllers
                 user.Email = usersVM.Email;
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
-                    return RedirectToAction(nameof(Index));
+                {
+                    TempData["Message"] = "User updated successfully";
+                    TempData["MessageType"] = "success";
+                }
                 else
+                {
                     message = "User update failed";
+                    TempData["Message"] = message;
+                    TempData["MessageType"] = "error";
+                }
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 message = _environment.IsDevelopment() ? ex.Message : "Failed to update user";
+                TempData["Message"] = message;
+                TempData["MessageType"] = "error";
             }
             return View(usersVM);
         }

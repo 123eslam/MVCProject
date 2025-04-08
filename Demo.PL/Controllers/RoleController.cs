@@ -45,13 +45,23 @@ namespace Demo.PL.Controllers
                 };
                 var result = await _roleManager.CreateAsync(role);
                 if (result.Succeeded)
-                    return RedirectToAction(nameof(Index));
+                {
+                    TempData["Message"] = "Role created successfully";
+                    TempData["MessageType"] = "success";
+                }
                 else
+                {
                     message = "Role creation failed";
+                    TempData["Message"] = message;
+                    TempData["MessageType"] = "error";
+                }
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 message = _environment.IsDevelopment() ? ex.Message : "Role to create user";
+                TempData["Message"] = message;
+                TempData["MessageType"] = "error";
             }
             return View(roleVM);
         }
@@ -140,13 +150,23 @@ namespace Demo.PL.Controllers
                     }
                 }
                 if (result.Succeeded)
-                    return RedirectToAction(nameof(Index));
+                {
+                    TempData["Message"] = "Role updated successfully";
+                    TempData["MessageType"] = "success";
+                }
                 else
+                {
                     message = "Role update failed";
+                    TempData["Message"] = message;
+                    TempData["MessageType"] = "error";
+                }
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 message = _environment.IsDevelopment() ? ex.Message : "Role to update user";
+                TempData["Message"] = message;
+                TempData["MessageType"] = "error";
             }
             return View(roleVM);
         }

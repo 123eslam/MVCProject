@@ -4,7 +4,7 @@
 }
 @if (!string.IsNullOrEmpty(TempData["Message"] as string))
 {
-	<div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
+	@* <div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1050;">
 		<div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
 			<div class="toast-header">
 				<img src="~/img/ImageTrue.jpg" class="rounded me-2" alt="Success Icon" width="30" height="30">
@@ -16,7 +16,23 @@
 				@TempData["Message"]
 			</div>
 		</div>
-	</div>
+	</div> *@
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+		@{
+			var messageType = TempData["MessageType"] as string ?? "success";
+		}
+
+			Swal.fire({
+				title: '@messageType.ToUpper()' + '!!',
+				text: '@TempData["Message"]',
+				icon: '@messageType',
+				confirmButtonText: 'OK',
+				timer: 3000,
+				timerProgressBar: true
+			});
+		});
+	</script>
 
 }
 <h1>All Employee</h1>
@@ -27,7 +43,7 @@
 		</a>
 	</div>
 	<div class="col-6">
-		<form class="row justify-content-end mt-5" >
+		<form class="row justify-content-end mt-5">
 			<div class="col-6">
 				<input type="search" name="SearchValue" class="form-control" id="Searchinp" placeholder="Search by employee name" />
 			</div>
@@ -112,12 +128,12 @@ else
 	const table = $('table');
 
 	searchBar.on('keyup', function(event) {
-		var searchValue = searchBar.val(); 
+		var searchValue = searchBar.val();
 
 		$.ajax({
 			url: '/Employee/Search',
 			type: 'GET',
-			data: { SearchValue: searchValue }, 
+			data: { SearchValue: searchValue },
 			success: function(result) {
 				table.html(result);
 			},

@@ -29,8 +29,8 @@ namespace Demo.PL.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            ViewData["Message"] = "Hello from View Data";
-            ViewBag.Message = "Hello from View Bag";
+            //ViewData["Message"] = "Hello from View Data";
+            //ViewBag.Message = "Hello from View Bag";
             var departments = await _departmentService.GetDepartmentsAsync();
             return View(departments);
         }
@@ -56,11 +56,13 @@ namespace Demo.PL.Controllers
                 if (result > 0)
                 {
                     TempData["Message"] = "Department created successfully";
+                    TempData["MessageType"] = "success";
                 }
                 else
                 {
                     message = "Failed to create department";
                     TempData["Message"] = message;
+                    TempData["MessageType"] = "error";
                     ModelState.AddModelError(string.Empty, message);
                 }
                 return RedirectToAction(nameof(Index));
@@ -76,6 +78,8 @@ namespace Demo.PL.Controllers
                 else
                 {
                     message = "Failed to create department";
+                    TempData["Message"] = message;
+                    TempData["MessageType"] = "error";
                     return View("Error", message);
                 }
             }
@@ -120,15 +124,24 @@ namespace Demo.PL.Controllers
                 departmentToUpdate.Id = id;
                 var result = await _departmentService.UpdateDepartmentAsync(departmentToUpdate);
                 if (result > 0)
-                    return RedirectToAction(nameof(Index));
+                {
+                    TempData["Message"] = "Department updated successfully";
+                    TempData["MessageType"] = "success";
+                }
                 else
                 {
                     message = "Failed to update department";
+                    TempData["Message"] = message;
+                    TempData["MessageType"] = "error";
                 }
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 message = _environment.IsDevelopment() ? ex.Message : "Failed to update department";
+                _logger.LogError(ex, ex.Message);
+                TempData["Message"] = message;
+                TempData["MessageType"] = "error";
             }
             return View(department);
         }
@@ -154,16 +167,24 @@ namespace Demo.PL.Controllers
             {
                 var result = await _departmentService.DeleteDepartmentAsync(id);
                 if (result)
-                    return RedirectToAction(nameof(Index));
+                {
+                    TempData["Message"] = "Department deleted successfully";
+                    TempData["MessageType"] = "success";
+                }
                 else
                 {
                     message = "Failed to delete department";
+                    TempData["Message"] = message;
+                    TempData["MessageType"] = "error";
                 }
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
                 message = _environment.IsDevelopment() ? ex.Message : "Failed to delete department";
+                TempData["Message"] = message;
+                TempData["MessageType"] = "error";
             }
             return View(nameof(Index));
         } 

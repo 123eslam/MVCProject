@@ -4,6 +4,26 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+	<script>
+		document.addEventListener('DOMContentLoaded', function() {
+		@{
+			var messageType = TempData["MessageType"] as string ?? "success";
+		}
+
+			Swal.fire({
+				title: '@messageType.ToUpper()' + '!!',
+				text: '@TempData["Message"]',
+				icon: '@messageType',
+				confirmButtonText: 'OK',
+				timer: 3000,
+				timerProgressBar: true,
+			});
+		});
+	</script>
+}
+
 <h1>All Users</h1>
 <div class="row justify-content-end">
 	<div class="col-6">

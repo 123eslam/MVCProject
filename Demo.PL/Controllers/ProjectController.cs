@@ -14,7 +14,7 @@ namespace Demo.PL.Controllers
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger<ProjectController> _logger;
 
-        public ProjectController(IProjectService projectService,IMapper mapper , ILogger<ProjectController> logger, IWebHostEnvironment environment)
+        public ProjectController(IProjectService projectService, IMapper mapper, ILogger<ProjectController> logger, IWebHostEnvironment environment)
         {
             _projectService = projectService;
             _mapper = mapper;
@@ -63,11 +63,15 @@ namespace Demo.PL.Controllers
                 var projectCreate = _mapper.Map<CreateProjectDto>(projectDto);
                 var Result = await _projectService.CreateProjectAsync(projectCreate);
                 if (Result > 0)
+                {
                     TempData["Message"] = "Project created successfully";
+                    TempData["MessageType"] = "success";
+                }
                 else
                 {
                     message = "Failed to create project";
                     TempData["Message"] = message;
+                    TempData["MessageType"] = "error";
                     ModelState.AddModelError(string.Empty, message);
                 }
                 return RedirectToAction(nameof(Index));
@@ -83,6 +87,8 @@ namespace Demo.PL.Controllers
                 else
                 {
                     message = "Failed to create project";
+                    TempData["Message"] = message;
+                    TempData["MessageType"] = "error";
                     return View("Error", message);
                 }
             }
@@ -113,15 +119,23 @@ namespace Demo.PL.Controllers
             {
                 var result = await _projectService.UpdateProjectAsync(projectDto);
                 if (result > 0)
-                    return RedirectToAction(nameof(Index));
+                {
+                    TempData["Message"] = "Project update successfully";
+                    TempData["MessageType"] = "success";
+                }
                 else
                 {
                     message = "Failed to update project";
+                    TempData["Message"] = message;
+                    TempData["MessageType"] = "error";
                 }
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 message = _environment.IsDevelopment() ? ex.Message : "Failed to update project";
+                TempData["Message"] = message;
+                TempData["MessageType"] = "error";
             }
             return View(projectDto);
         }
@@ -147,16 +161,24 @@ namespace Demo.PL.Controllers
             {
                 var result = await _projectService.DeleteProjectAsync(id);
                 if (result)
-                    return RedirectToAction(nameof(Index));
+                {
+                    TempData["Message"] = "Project deleted successfully";
+                    TempData["MessageType"] = "success";
+                }
                 else
                 {
                     message = "Failed to delete project";
+                    TempData["Message"] = message;
+                    TempData["MessageType"] = "error";
                 }
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
                 message = _environment.IsDevelopment() ? ex.Message : "Failed to delete project";
+                TempData["Message"] = message;
+                TempData["MessageType"] = "error";
             }
             return View(nameof(Index));
         }

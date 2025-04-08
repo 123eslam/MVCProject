@@ -4,31 +4,31 @@
     Layout = "~/Views/Shared/_AuthLayout.cshtml";
 }
 
-<div class="main-agileinfo">
-	<div class="agileits-top">
-		<div asp-validation-summary="All" class="text-danger"></div>
-		<form asp-action="Login">
-			<input class="text" asp-for="Email" placeholder="Enter your email" required="">
-			<span asp-validation-for="Email" class="text-danger mb-3"></span>
-			<br />
-			<input class="text" asp-for="Password" placeholder="Enter your password" required="">
-			<span asp-validation-for="Password" class="text-danger mb-3"></span>
-			<br />
-			<div class="wthree-text">
-				<label class="anim">
-					<input asp-for="RememberMe" class="checkbox">
-					<span>Remember Me</span>
-				</label>
-				<div class="clear"> </div>
-			</div>
-			<input type="submit" value="SIGNIN">
-		</form>
-		<p>Don't have an Account? <a asp-action="Register"> Register Now!</a></p>
-		<p>Forget your password? <a asp-action="ForgetPassword"> Reset your password!</a></p>
-	</div>
+<div class="auth-container login-container">
+    <h2 class="auth-title">Log In</h2>
+
+    <div asp-validation-summary="All" class="validation-summary-errors"></div>
+
+    <form asp-action="Login" method="post">
+        <input class="auth-input" type="email" asp-for="Email" placeholder="Your Email" required>
+        <span asp-validation-for="Email" class="text-danger"></span>
+
+        <input class="auth-input" type="password" asp-for="Password" placeholder="Your Password" required>
+        <span asp-validation-for="Password" class="text-danger"></span>
+
+        <div class="remember-me" style="text-align: left; color: white;">
+            <label>
+                <input asp-for="RememberMe" type="checkbox" style="margin-left: 5px;">
+                <span>Remember me</span>
+            </label>
+        </div>
+
+        <button type="submit" class="auth-btn">Log In</button>
+    </form>
+    <a asp-action="Register" class="auth-link"> Register Now!</a>
+    <a asp-action="ForgetPassword" class="auth-link"> Forget your password!</a>
 </div>
 
 @section ValidationScripts {
-	<partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial" />
 }
-

@@ -1,0 +1,59 @@
+﻿@model UpdateEmployeeWorkOnProjectDto
+@inject IEmployeeService employeeService 
+@inject IProjectService projectService 
+@{
+	var allEmployees = await employeeService.GetEmployeesAsync(string.Empty);
+	var allProjects = await projectService.GetProjectsAsync(string.Empty);
+	var employeesByDept = allEmployees.GroupBy(e => e.Department ?? "No Department");
+	var projectsByCategory = allProjects.GroupBy(p => p.Department ?? "General");
+}
+<form method="post" asp-action="@ViewData["Title"]" class="col-8" enctype="multipart/form-data">
+	<div asp-validation-summary="ModelOnly"></div>
+	<div class="form-group mt-3">
+		<label asp-for="EmployeeId" class="control-label mb-2">Employee</label>
+		<select asp-for="EmployeeId" class="form-control">
+			<option value="@null">Select Employee</option>
+			@foreach (var deptGroup in employeesByDept)
+			{
+				<optgroup label="@deptGroup.Key">
+					@foreach (var employee in deptGroup)
+					{
+						<option value="@employee.Id">@employee.Name</option>
+					}
+				</optgroup>
+			}
+		</select>
+	</div>
+
+	<div class="form-group mt-3">
+		<label asp-for="ProjectId" class="control-label mb-2">Project</label>
+		<select asp-for="ProjectId" class="form-control">
+			<option value="@null">Select Project</option>
+			@foreach (var categoryGroup in projectsByCategory)
+			{
+				<optgroup label="@categoryGroup.Key">
+					@foreach (var project in categoryGroup)
+					{
+						<option value="@project.Id">@project.Name</option>
+					}
+				</optgroup>
+			}
+		</select>
+	</div>
+	<div class="form-floating mt-3">
+		<input class="form-control" asp-for="NumOfHours" placeholder="">
+		<label asp-for="NumOfHours"></label>
+		<span asp-validation-for="NumOfHours" class="text-danger"></span>
+	</div>
+	<div class="m-auto mt-4">
+		@if (ViewData["Title"] as string == "Create")
+		{
+			<input type="submit" class="btn btn-primary" value="Create">
+		}
+		else
+		{
+			<input type="submit" class="btn btn-success" value="Edit">
+		}
+		<a asp-controller="WorksOn" asp-action="Index" class="btn btn-outline-dark">Back to list</a>
+	</div>
+</form>

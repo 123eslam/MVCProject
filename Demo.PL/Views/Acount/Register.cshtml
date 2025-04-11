@@ -1,0 +1,43 @@
+﻿@model RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="auth-container register-container">
+    <h2 class="auth-title">Sign Up</h2>
+
+    <div asp-validation-summary="All" class="validation-summary-errors"></div>
+
+    <form asp-action="Register" method="post">
+        <input class="auth-input" type="text" asp-for="FName" placeholder="First Name" required>
+        <span asp-validation-for="FName" class="text-danger"></span>
+
+        <input class="auth-input" type="text" asp-for="LName" placeholder="Last Name" required>
+        <span asp-validation-for="LName" class="text-danger"></span>
+
+        <input class="auth-input" type="email" asp-for="Email" placeholder="Email" required>
+        <span asp-validation-for="Email" class="text-danger"></span>
+
+        <input class="auth-input" type="password" asp-for="Password" placeholder="Password" required>
+        <span asp-validation-for="Password" class="text-danger"></span>
+
+        <input class="auth-input" type="password" asp-for="ConfirmPassword" placeholder="Confirm Password" required>
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+
+        <div class="terms-agree" style="text-align: left; color: white; margin: 15px 0;">
+            <label>
+                <input asp-for="IsAgree" type="checkbox" required style="margin-left: 5px;">
+                <span>I Agree To The Terms & Conditions</span>
+            </label>
+            <span asp-validation-for="IsAgree" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="auth-btn">Sign up</button>
+    </form>
+    <a asp-action="Login" class="auth-link"> Login Now!</a>
+</div>
+
+@section ValidationScripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Check Your Inbox";
+    Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+
+<div class="auth-container message-container">
+    <h2 class="auth-title">Check your inbox</h2>
+
+    <div class="message-content">
+        <p>
+            We have sent you an email with a link to reset your password,
+            If you don't receive an email, please check your spam folder.
+        </p>
+
+        <a href="https://mail.google.com/" target="_blank" class="auth-btn" style="display: inline-block; width: auto; padding: 0 20px;">
+            Your inbox
+        </a>
+
+        <a asp-action="Login" class="auth-link">Log In</a>
+    </div>
+</div>
+

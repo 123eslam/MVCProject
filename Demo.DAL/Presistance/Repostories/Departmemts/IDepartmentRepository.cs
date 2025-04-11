@@ -1,19 +1,10 @@
 ﻿using Demo.DAL.Entities.Departments;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Demo.DAL.Presistance.Repostories._Generic;
 
 namespace Demo.DAL.Presistance.Repostories.Departmemts
 {
-    public interface IDepartmentRepository
+    public interface IDepartmentRepository : IGenericRepository<Department>
     {
-        IEnumerable<Department> GetAll(bool AsNoTracking = true);
-        IQueryable<Department> GetAllQueryable();
-        Department? GetByID(int id);
-        int AddDepartment(Department entity);
-        int UpdateDepartment(Department entity);
-        int DeleteDepartment(Department entity);
+        Department? GetByName(string name);
     }
 }

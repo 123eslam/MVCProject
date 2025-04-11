@@ -1,0 +1,39 @@
+﻿@model RoleViewModel
+
+<form method="post" asp-action="@ViewData["Title"]" class="col-8" >
+	<div asp-validation-summary="ModelOnly"></div>
+	<div class="form-floating mt-3">
+		<input class="form-control" asp-for="Name" placeholder="">
+		<label asp-for="Name">Name</label>
+		<span asp-validation-for="Name" class="text-danger"></span>
+	</div>
+	@if (ViewData["Title"] as string == "Edit")
+	{
+		<div>
+			<h3>Assign users to roles</h3>
+			<div class="form-group">
+				@for(int i = 0; i < Model.Users.Count; i++)
+				{
+					<div class="form-check">
+						<input type="hidden" asp-for="Users[i].UserId" />
+						<input type="hidden" asp-for="Users[i].UserName" />
+						<input class="form-check-input" asp-for="Users[i].IsSelected" />
+						<label class="form-check-label">@Model.Users[i].UserName</label>
+					</div>
+				}
+			</div>
+
+		</div>
+	}
+	<div class="m-auto mt-4">
+		@if (ViewData["Title"] as string == "Create")
+		{
+			<input type="submit" class="btn btn-primary" value="Create">
+		}
+		else
+		{
+			<input type="submit" class="btn btn-success" value="Edit">
+		}
+		<a asp-controller="Role" asp-action="Index" class="btn btn-outline-dark">Back to list</a>
+	</div>
+</form>
